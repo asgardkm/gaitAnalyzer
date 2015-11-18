@@ -3,7 +3,7 @@
 % based on choosing certain markers.
 % author      - Asgard Kaleb Marroquin (University of South Florida)
 % created     - 24aug2015
-% last edited - 10nov2015
+% last edited - 16nov2015
 
 %% INPUTS : DATA PREPARATION
 
@@ -13,8 +13,39 @@
 % TEXT INDEXES
 %   set the indexes (columns) you wish to use from the text file (include 
 %   forces or whole text file?)
-txt_idx = 1:167;
-% txt_idx = 150:167;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PLEASE NOTE!!!! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% IT IS IMPERATIVE THAT YOU SET AND CHANGE COLUMN INDEXES YOU WISH    %%%
+%%% TO SELECT FROM YOUR INPUT DATA IN YOUR TEXT DFLOW FILES             %%%
+%%% - THAT MEANS YOU NEED TO KNOW HOW YOUR DATA IS SET UP INTO ITS      %%%
+%%%   COLUMNS - INPUT BELOW THE COLUMN INDEXES FOR THE MARKERS YOU      %%%
+%%%   WISH TO LOOK AT                                                   %%%
+%%% - OTHERWISE THE CODE WILL RETURN AN ERROR - IT CANNOT GUESS WHAT    %%%
+%%%   COLUMNS AND MARKERS YOU WISH TO LOOK AT!!! (YET :))               %%%
+%%% - 16nov2015 - implenting a default to load EVERYTHING in the raw    %%%
+%%%   data file if txt_idx is not manually changed below. You may or    %%%
+%%%   may not want this because it is not always guaranteed to work!!   %%%
+%%%   (default input arg: txt_idx = 'default');                         %%%
+%%%                                                                     %%%
+%%% As of right now, only markers that have X Y Z coordinate in the     %%%
+%%% string of the marker are considered when loading up text files!     %%%
+txt_idx = 'default';                                                    %%%
+frame_idx = 1;      % column which has frame data ('default' will ignore%%%
+time_idx  = 2;      % column which was time data   these two columns)   %%%
+ignore_idx = [frame_idx time_idx];                                      %%%
+%%% ignore_idx only currently works if the indexes you wish to skip are %%%
+%%% the very first columns (like columns 1 and 2) - this may not be true%%%
+%%% now, but it hasn't been tested.                                     %%%
+%%%                                                                     %%%
+%%% txt_idx = 1:167;                                                    %%%
+%%% txt_idx = 150:167;                                                  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THANK YOU!!! :) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %FREQUENCY OF CAMERAS
 frequency  = 100; % set frequency of camera for times (the camera used for this is using  100 HZ)
@@ -35,6 +66,7 @@ setMyWD();
 
 % =========================================================================
 %determine OS
+% 10nov2015 - ERROR WITH READING IN SAMPLE TEXT FILES - WHY?
 [pc_os, unix_os] = determineOS();
 [csv_str, txt_str] = formatStrings(unix_os, pc_os);
 % either create or choose pre-existing combined trial data and get it's
@@ -44,7 +76,7 @@ setMyWD();
 
 % =========================================================================
 % READING TRIAL DATA
-[marker_all, coord_all, data_all] = readData(trialfile, patient_dir, conc_input, txt_idx);
+[marker_all, coord_all, data_all] = readData(trialfile, patient_dir, conc_input, txt_idx, ignore_idx);
 % =========================================================================
 
 % =========================================================================
@@ -56,7 +88,7 @@ ttl = assignMarkers(marker_all, coord_all, data_all);
 % CLEAN MARKERS
 % need a function that puts each marker in ttl to its individual ttl coords
 % and data columns
-[clean, kill_list, data_all] = cleanMarkers(ttl);
+[clean, kill_list, data_all] = cleanMarkers(ttl, ignore_idx, conc_input);
 % =========================================================================
 
 % =========================================================================

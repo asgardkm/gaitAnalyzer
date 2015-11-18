@@ -88,6 +88,24 @@ ttl.title  = ttl.title(~cellfun('isempty', ttl.title));
 ttl.coords = ttl.coords(~cellfun('isempty', ttl.coords));
 ttl.data   = ttl.data(~cellfun('isempty', ttl.data));
 
+
+flag = 0; % just make sure that all elements in data_all are vectors :
+while flag == 0
+
+    change_idx = cellfun(@(element) iscell(element), ttl.data);
+    
+    if any(change_idx == 1)
+        tmp_idx = find(change_idx);
+        % fix cell elements (for length of # of idx that are cells)
+        ttl.data(tmp_idx) = ttl.data{tmp_idx}; 
+
+    else
+        flag = 1; % if no more cells, then flag it and move on
+    end
+
+end
+
+
 fprintf('done\n')
 end
 

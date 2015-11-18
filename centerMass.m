@@ -23,7 +23,7 @@ function[centermass] = centerMass(SACR, NAVE, oldclean)
 fprintf('Finding center of mass')
 
 
-%---trimming idx---------------------------------------------------
+%--------------------trimming idx------------------------------------------
 % How can i automatize this below? I don't want to do this every time for
 % every new function that needs trimming
 %   I tried, spent a couple of hours on it, feel like i should move on and
@@ -41,12 +41,13 @@ all_str = fieldnames(oldclean);
 new_marray = useMarkerLCD(marray, str_ray, all_str, oldclean);
 sacr = new_marray{1};
 nave = new_marray{2};
-%--end of trimming--------------------------------------------------
+%--------------end of trimming---------------------------------------------
 
 
 sacr = struct2cell(sacr);
 nave = struct2cell(nave);
 
+% THIS IS WHERE CENTER OF MASS IS CALCULATED
 tmp_values = cellfun(@(c1, c2) mean([c1{:} c2{:}], 2), sacr, nave, 'uniformoutput', false);
 % get names of SACR - X Y Z
 tmp_names = fieldnames(SACR);

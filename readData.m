@@ -1,4 +1,4 @@
-function[marker_all, coord_all, data_all] = readData(trialfile, patient_dir, conc_output, txt_idx)
+function[marker_all, coord_all, data_all] = readData(trialfile, patient_dir, conc_output, txt_idx, ignore_idx)
 %% read the data!
 
 % the method you use to read in file (csvread, dlmread) will depend on the
@@ -8,7 +8,7 @@ fprintf('Reading %s file - ', trialfile)
 
 switch conc_output
     case '1' % if selected 1 (read raw DFLOW txt file) - use raw txt read function
-        [marker_all, coord_all, data_all] = importRawTxt(trialfile, 0, txt_idx, patient_dir);
+        [marker_all, coord_all, data_all] = importRawTxt(trialfile, 0, txt_idx, ignore_idx, patient_dir);
 
     case '2' % if selected 2 (read raw NEXUS csv file) - use raw csv read function
         [marker_all, coord_all, data_all] = importRawCsv(trialfile, patient_dir);

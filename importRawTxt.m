@@ -1,4 +1,4 @@
-function[forces_name, force_coords, forces_values] = importRawTxt(txt_file_tmp, includeforces, select_idx, patient_dir)
+function[forces_name, force_coords, forces_values] = importRawTxt(txt_file_tmp, includeforces, select_idx, ignore_idx, patient_dir)
 % function - read in a raw DFLOW text file
 %
 % form    : [marker_all, coord_all(???), data_all]= importRawTxt(txt_file_tmp, includeforces, select_idx, patient_dir)
@@ -11,8 +11,24 @@ function[forces_name, force_coords, forces_values] = importRawTxt(txt_file_tmp, 
 %
 % Outputs : 
 %
+%
+% NOTE : you need to provide the variable ignore_idx which columns are 
+% "dummy" columns (like Time and Frame columns) that have no coord data 
+%   - ex if time & frame are the first two dummy columns, then ignore_idx=2
+
 % created 10nov2015
-% last edited 10nov2015
+% last edited 17nov2015
+
+% 16nov2015 - following error message from sample data : Index exceeds
+% matrix dimensions : 
+% Error in importRawTxt (line 35)
+%     forces        = forces(1:length(forces)-2, f_idx);
+% Error in readData (line 11)
+%         [marker_all, coord_all, data_all] = importRawTxt(trialfile, 0, txt_idx, patient_dir); 
+%    
+% need better way to define where forces(numbers) are and where text
+% (strings) are
+%   idea - use regexp!
 
 orig_dir = cd(patient_dir);
 % Read txt dflow data
@@ -29,11 +45,14 @@ str_for = [all_for{1:length(all_for)}];
 fclose(open_pos);
 
 % Assign dflow data to cells - name and values
-    %  forces will be the columns 150:167 - must be hard coded for now
-    % f_idx         = 150:167;
+%  forces will be the columns 150:167 - must be hard coded for now
+% f_idx         = 150:167;
+if strcmp(select_idx, 'default')
+    f_idx         = 1 : length(forces(1,:));
+else
     f_idx         = select_idx;
-    forces        = forces(1:length(forces)-2, f_idx);
-
+end
+forces        = forces(1:length(forces(:,1)), f_idx);
 
 % get the forces names! (split up big string, then only call names for
 % forces)
@@ -45,10 +64,11 @@ forces_values = forces;
 
 % get the 'x y z' string value...
 force_coords = [{'x'}, {'y'}, {'z'}];
+
 if includeforces == 0 %if bool is false - create a coord list 
     
     % ... and repeat it for each name (for pos and for forces)
-    force_coords = repmat(force_coords, 1, (length(forces_name)-2)/3);
+    force_coords = repmat(force_coords, 1, floor((length(forces_name) - length(ignore_idx))/3));
     force_coords = [forces_name{1:2}, force_coords];
 end
 

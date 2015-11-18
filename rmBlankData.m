@@ -61,25 +61,31 @@ fprintf('   finding markers missing at least %2.0f%% of total data', percent_mis
 for i = 1: length(dall)
 
     if bool == 1 
-    % find where are empty values based on bools (1's and 0's)
-    empty_idx_all{i} = cellfun(@(idx) (all(idx, 2)), dall{i}, 'uniformoutput', false);
-    % find the zeros - indexes where there is nothing
-    empty_idx{i}     = cellfun(@(idx) (find(~idx)),  empty_idx_all{i}, 'uniformoutput', false);
-    
-    % determine what goes on the kill_list based on value of bool
-    % if bool == 1 - then you'll be killing whole markers
-        % find percentage of missing data compared to all the data possible
-        p_miss       = cellfun(@(idx_miss, idx_all) (length(idx_miss)/length(idx_all)),...
-                                 empty_idx{i}, empty_idx_all{i});
-        % if percentage of missing values are above threshold - add marker to
-        % kill list
-        kill_idx     = bsxfun(@ge, p_miss, percent_missing_threshold);
+        for j = 1 : length(dall{i}(1,:)) % this is for the length of each matrix in each cell in dall
+        % find where are empty values based on bools (1's and 0's)
+        empty_idx_all{i}(:, j) = all(dall{i}(:, j), 2);
+        % find the zeros - indexes where there is nothing
+        empty_idx{i}(:, j)     = find(~empty_idx_all{i}(:, j));
+
+        % determine what goes on the kill_list based on value of bool
+        % if bool == 1 - then you'll be killing whole markers
+            % find percentage of missing data compared to all the data possible
+            p_miss       = length(empty_idx{i}(:, j)) / length(empty_idx_all{i}(:,j));
+            % if percentage of missing values are above threshold - add marker to
+            % kill list
+            kill_idx     = bsxfun(@ge, p_miss, percent_missing_threshold);
+            kill_list{i}(:, j)    = kill_idx;
+            % aannnddd BREAK! only need to run once - i better organized
+            % data_all into a cell of vectors (it used to be a cell of cells
+            % containing vectors and i don't know why that was a good idea)
+%             break
+        % if bool == 0 - then you'll be killing indexes of missing vals for
+        % a certain marker(s)
+        % and you only want one iteration - get your missing idx from your
+        % input marker,break this loop, and move on to kill all the idx in
+        % kill_list from all the datas
+        end % end of j loop
         
-    % if bool == 0 - then you'll be killing indexes of missing vals for
-    % a certain marker(s)
-    % and you only want one iteration - get your missing idx from your
-    % input marker,break this loop, and move on to kill all the idx in
-    % kill_list from all the datas
     elseif bool == 0
     % find where are empty values based on bools (1's and 0's)
     empty_idx_all{i} = cellfun(@(idx) (all(idx, 2)), dall{i}, 'uniformoutput', false);
@@ -96,7 +102,7 @@ for i = 1: length(dall)
     end
     
     %assign kill_idx found to an evergrowing cell array kill_list
-    kill_list{i}    = kill_idx;
+%     kill_list{i}    = kill_idx;
     
     fprintf('.')
 end
@@ -171,7 +177,7 @@ for i = 1:length(new_dall)
            if ~kill_list{i}(j)
                new.(clean.title{i}).(tmp_name(j,:)) = clean.data{i}(j);
                % also define new_data_all - don't want data from purged markers
-               new_dall{i}{j} = clean.data{i}{j}; %26oct2015 - fixed new_dall assignment
+               new_dall{i}{j} = clean.data{i}(j); %26oct2015 - fixed new_dall assignment
                                                  % fixed mismatch assignment error message
                
                % if index is on kill_list : return empty cell? - perhaps if length
@@ -235,6 +241,13 @@ if isempty(kill_list) == 0 && bool == 0 % display when the kill_list isnt empty
     fprintf(' %g ', char(kill_list));
     fprintf('\n')
 end 
+
+% if the kill_list is straight up empty, then return a message and save
+% kill_list as zero
+if all( cell2mat( (cellfun(@(bool) all(bool==1), kill_list, 'uniformoutput', false)) )  == 0)
+    fprintf('\nNo markers removed! - all have at least %f data\n', percent_missing_threshold)
+    kill_marker = 0;
+end
 fprintf('done\n')
 
 if bool == 0 % assign kill_marker something if bool == 0 b/c it isnt defined
