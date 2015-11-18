@@ -49,7 +49,6 @@ fprintf('Cleaning data values :\n')
 
 %preallocate : 
 empty_idx_all   = cell(size(dall));
-empty_idx       = cell(size(dall));
 kill_list       = cell(size(dall));
 
 % if dall is a structure, then convert it into a cell array - primarily if
@@ -63,14 +62,14 @@ for i = 1: length(dall)
     if bool == 1 
         for j = 1 : length(dall{i}(1,:)) % this is for the length of each matrix in each cell in dall
         % find where are empty values based on bools (1's and 0's)
-        empty_idx_all{i}(:, j) = all(dall{i}(:, j), 2);
+        empty_idx_all{i}(:, j) = ~all(dall{i}(:, j), 2);
         % find the zeros - indexes where there is nothing
-        empty_idx{i}(:, j)     = find(~empty_idx_all{i}(:, j));
+        empty_idx     = find(empty_idx_all{i}(:, j));
 
         % determine what goes on the kill_list based on value of bool
         % if bool == 1 - then you'll be killing whole markers
             % find percentage of missing data compared to all the data possible
-            p_miss       = length(empty_idx{i}(:, j)) / length(empty_idx_all{i}(:,j));
+            p_miss       = length(empty_idx) / length(empty_idx_all{i}(:,j));
             % if percentage of missing values are above threshold - add marker to
             % kill list
             kill_idx     = bsxfun(@ge, p_miss, percent_missing_threshold);
@@ -175,9 +174,9 @@ for i = 1:length(new_dall)
            
            % save coords that are not indexed to be empty
            if ~kill_list{i}(j)
-               new.(clean.title{i}).(tmp_name(j,:)) = clean.data{i}(j);
+               new.(clean.title{i}).(tmp_name(j,:)) = clean.data{i}(:, j);
                % also define new_data_all - don't want data from purged markers
-               new_dall{i}{j} = clean.data{i}(j); %26oct2015 - fixed new_dall assignment
+               new_dall{i}{j} = clean.data{i}(:,j); %26oct2015 - fixed new_dall assignment
                                                  % fixed mismatch assignment error message
                
                % if index is on kill_list : return empty cell? - perhaps if length
@@ -244,8 +243,8 @@ end
 
 % if the kill_list is straight up empty, then return a message and save
 % kill_list as zero
-if all( cell2mat( (cellfun(@(bool) all(bool==1), kill_list, 'uniformoutput', false)) )  == 0)
-    fprintf('\nNo markers removed! - all have at least %f data\n', percent_missing_threshold)
+if all( cell2mat( (cellfun(@(bool) any(bool==1), kill_list, 'uniformoutput', false)) )  == 0)
+    fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
     kill_marker = 0;
 end
 fprintf('done\n')

@@ -97,8 +97,10 @@ while flag == 0
     if any(change_idx == 1)
         tmp_idx = find(change_idx);
         % fix cell elements (for length of # of idx that are cells)
-        ttl.data(tmp_idx) = ttl.data{tmp_idx}; 
-
+        % forloop it!
+        for i = 1 : length(tmp_idx)
+            ttl.data(tmp_idx(i)) = ttl.data{tmp_idx(i)}; 
+        end
     else
         flag = 1; % if no more cells, then flag it and move on
     end

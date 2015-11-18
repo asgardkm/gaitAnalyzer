@@ -207,7 +207,7 @@ clean.data = data_all;
 [new, kill_list, new_dall] = rmBlankData(clean, data_all, 0.5, 1);
 
 %display removed markers - only if kill_list ~=0:
-if kill_list ~=0
+if iscell(kill_list)
     fprintf('   The following markers were removed:\n') 
     cellfun(@(idx) fprintf('     %s\n', char(idx)'), kill_list, 'uniformoutput', false);
 end
