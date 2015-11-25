@@ -47,8 +47,8 @@ RLM  = new_marray{4};
 %--end of trimming--------------------------------------------------
 
 
-ldistval = hypot(LLEK.Z{:} - LLM.Z{:}, hypot(LLEK.X{:} - LLM.X{:}, LLEK.Y{:} - LLM.Y{:}));
-rdistval = hypot(RLEK.Z{:} - RLM.Z{:}, hypot(RLEK.X{:} - RLM.X{:}, RLEK.Y{:} - RLM.Y{:}));
+ldistval = hypot(LLEK.Z - LLM.Z, hypot(LLEK.X - LLM.X, LLEK.Y - LLM.Y));
+rdistval = hypot(RLEK.Z - RLM.Z, hypot(RLEK.X - RLM.X, RLEK.Y - RLM.Y));
 
 
 %Left Ankle and Knee:

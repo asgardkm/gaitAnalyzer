@@ -15,13 +15,13 @@ function[f1, f2] = getGRF(clean)
 %==========================================================================
 %assign forces in clean to variables
 %Filter the force values with the FilterMe function for smoother graphs
-f1.side = FilterMe(clean.FP1For.X{:}, 2, 0.1);
-f1.vert = FilterMe(clean.FP1For.Y{:}, 2, 0.1);
-f1.forw = FilterMe(clean.FP1For.Z{:}, 2, 0.1);
+f1.side = FilterMe(clean.FP1For.X, 2, 0.1);
+f1.vert = FilterMe(clean.FP1For.Y, 2, 0.1);
+f1.forw = FilterMe(clean.FP1For.Z, 2, 0.1);
 
-f2.side = FilterMe(clean.FP2For.X{:}, 2, 0.1);
-f2.vert = FilterMe(clean.FP2For.Y{:}, 2, 0.1);
-f2.forw = FilterMe(clean.FP2For.Z{:}, 2, 0.1);
+f2.side = FilterMe(clean.FP2For.X, 2, 0.1);
+f2.vert = FilterMe(clean.FP2For.Y, 2, 0.1);
+f2.forw = FilterMe(clean.FP2For.Z, 2, 0.1);
 
 
 end

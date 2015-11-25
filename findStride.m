@@ -10,14 +10,17 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
 %             rstep.(dist/time).(avg, std, vector, idx)
 %
 %       created     : 19oct2015 (AKM)
-%       last edited : 19oct2015 (AKM)
+%       last edited : 24nov2015 (AKM) - revising while statements - they go
+%       infinite if conditions aren't met! something is wrong with the
+%       index diff values b/c lengths are not matching - maybe person's
+%       gait is really messed up? (looking @ NinaW20001.txt)
 %
 %% CODE
 %==========================================================================
 %FINDING THE STEP DISTANCE OF BOTH FEET
 %==========================================================================
-YLeftStep  = FilterMe(RHEE.Y{:} - LHEE.Y{:}, 2, 0.1); % Left Step = Right Heel Pos - Left Heel Pos
-YRightStep = FilterMe(LHEE.Y{:} - RHEE.Y{:}, 2, 0.1); %Right Step = vice versa of above
+YLeftStep  = FilterMe(RHEE.Y - LHEE.Y, 2, 0.1); % Left Step = Right Heel Pos - Left Heel Pos
+YRightStep = FilterMe(LHEE.Y - RHEE.Y, 2, 0.1); %Right Step = vice versa of above
 %Butterworth filter to smooth out data - necessary to find the peaks of
 %the heel steps.   
 
@@ -41,7 +44,7 @@ YRightStep = FilterMe(LHEE.Y{:} - RHEE.Y{:}, 2, 0.1); %Right Step = vice versa o
 % if the YLeft Step switches from Positive to Negative, then the Right
 % Heel is passing the Left Heel(Left Heel is on ground, and Right Heel
 % is in the air).
-Lstep_unit = bsxfun(@ldivide, YLeftStep, abs(YLeftStep));
+Lstep_unit = bsxfun(@ldivide, YLeftStep,  abs(YLeftStep));
 Rstep_unit = bsxfun(@ldivide, YRightStep, abs(YRightStep));
 % 19oct2015 - yay vectorization :)
 % Therefore, when the above situation occurs, the zeroes that occur are
@@ -81,8 +84,8 @@ ZeroRStep_idx = ZeroRStep_idx(ZeroRStep_idx<=length(frame));
 %vectorize
 for i = 2 : length(ZeroLStep_idx);  
     
-    MaxLStep(i,1) = max(YLeftStep(ZeroLStep_idx(i-1,:) : ZeroLStep_idx(i,:)));
-    MaxRStep(i,1) = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
+    [MaxLStep(i,1), MaxLStep_idx(i,1)] = max(YLeftStep(ZeroLStep_idx(i-1,:) : ZeroLStep_idx(i,:)));
+    [MaxRStep(i,1), MaxRStep_idx(i,1)] = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
     
 end
 
@@ -108,17 +111,62 @@ MaxRStep = MaxRStep(MaxRStep~=0);
 %correct indexes.
 maxl_idx = bsxfun(@ge, MaxLStep, MaxRStep);
 maxr_idx = bsxfun(@ge, MaxRStep, MaxLStep);
+
+% 21nov2015 - NEED TO FIND IF ANY ELEMENTS REPEAT 1 - THAT IS, GET THE
+% INDEX OF ANY VALUE 1 THAT SHOULD BE A 0 WHEN CONSIDERING A 101010...
+% ALTERNATING PATTERN - need to get rid of these! may be caused from 
+% stumbling in trial? b/c maxes of same foot are one after the other
+
+% first get indexes of where the 1's are in each vector
+maxl_ones = find(maxl_idx == 1);
+maxr_ones = find(maxr_idx == 1);
+
+% checking for double-counted left indexes
+leftcheck1 = maxl_ones(diff(maxr_ones) > 2) + 1;
+leftcheck2 = maxl_ones(diff(maxl_ones) < 2) + 1; % is the plus one because of the way diff works - we want 
+% to get rid of the index AFTER a difference of one is detected - we don't
+% want to get rid of the index BEFORE the repeat.
+leftcheck  = intersect(leftcheck1, leftcheck2);
+
+% checking for double-counted right indexes
+rightcheck1 = maxr_ones(diff(maxl_ones) > 2) + 1;
+rightcheck2 = maxr_ones(diff(maxr_ones) < 2) + 1;
+rightcheck  = intersect(rightcheck1, rightcheck2);
+
+% filter out the check indexes from the max_idx vectors - this will get rid
+% of funny duplicates
+maxl_idx(leftcheck)  = [];
+maxl_idx(rightcheck) = [];
+maxr_idx(rightcheck) = [];
+maxr_idx(leftcheck)  = [];
+
+
+% %Find the indexes of the heel strikes (or maxes of relative L-R heel positions) 
+% %==========================================================================
+% %Just cycle through all the YLeftStep values. When a match is found with
+% %the MaxLStep - the heel strike -, the according frame is assigned to the
+% %index 
+% % 24nov2015- but don't need to, just use the index option in using max function
+% %above! commenting out below by implenting index option above
+% % 24nov2015 - actually you do want to keep those intersect functions b/c
+% % those tell you the index value for the ENTIRE trial (which is needed for
+% % the while loops below). The index value from the max function would
+% % return the index in that gaitcycle, which will be found anyways
+% % afterwards. 
+% %
+% % 19oct2015 - vectorize and use intersect!
+[~, ~, MaxLStep_idx] = intersect(MaxLStep, YLeftStep,  'stable');
+[~, ~, MaxRStep_idx] = intersect(MaxRStep, YRightStep, 'stable');
+
+
+% get the MaxStep data from the cleaned up max_idx vectors
 MaxLStep = MaxLStep(maxl_idx);
 MaxRStep = MaxRStep(maxr_idx);
 
-%Find the indexes of the heel strikes (or maxes of relative L-R heel positions) 
-%==========================================================================
-%Just cycle through all the YLeftStep values. When a match is found with
-%the MaxLStep - the heel strike -, the according frame is assigned to the
-%index
-% 19oct2015 - vectorize and use intersect!
-[~, ~, MaxLStep_idx] = intersect(MaxLStep, YLeftStep,  'stable');
-[~, ~, MaxRStep_idx] = intersect(MaxRStep, YRightStep, 'stable');
+% and pull out the indexes as well
+MaxLStep_idx = MaxLStep_idx(maxl_idx);
+MaxRStep_idx = MaxRStep_idx(maxr_idx);
+
 
 
 %Need to find another parameter in dealing with the little ones, because
@@ -136,43 +184,82 @@ MaxRStep = MaxRStep(maxr_idx);
 % it may be - but you don't have to deal with both step values and idx at
 % the same time. just deal with indexes! You can assign values after the
 % indexes are all organized
-while length(MaxLStep_idx) ~= length(MaxRStep_idx);
+
+% do a sample counter for while loop
+counter = 1
+
+% 24nov2015 - will try using "key" flags for restricting while loop,
+% because it is running infinitly - that's not good
+% toggle key to be zero when each of the four conditions below fail to
+% occur - that means that the two step_idx vectors are now the same size
+key = 1;
+while key == 1;
     %WHILE LEFT FOOT VECTOR IS LONGER THAN RIGHT FOOT VECTOR ---------------
     
     %Compare number of Left and Right Step Indexes to make sure they are also equal.  
     % while the left foot idx vector is longer...
-    while length(MaxLStep_idx) > length(MaxRStep_idx);
+    if length(MaxLStep_idx) > length(MaxRStep_idx);
         % check if last left value is bigger than the right ft's last value
             if MaxLStep_idx(end) > MaxRStep_idx(end)
                 % if so, then trim the last value
                 MaxLStep_idx = MaxLStep_idx(1:end-1);   
-                continue % jump - to check whether vectors are now equal
+%                 continue % jump - to check whether vectors are now equal
                 % otherwise, vector will feed to next piece of while loop
+                key1 = 1;
+            else
+                key1 = 0;
             end
         % check if left first value is bigger than the right ft's first value
             if MaxLStep_idx(1) > MaxRStep_idx(1)
                 MaxLStep_idx = MaxLStep_idx(2:end);
+                key2 = 1;
+            else
+                key2 = 0;
             end
-    end % end of nested while loop
+            
+    else
+        key1 = 0; key2 = 0;
+    end % end of nested if loop
     %----------------------------------------------------------------------  
     
     %WHILE RIGHT FOOT VECTOR IS LONGER THAN LEFT FOOT VECTOR --------------
     
     % while the right foot idx vector is longer...
-    while length(MaxRStep_idx) > length(MaxLStep_idx);
+    if length(MaxRStep_idx) > length(MaxLStep_idx);
         % check if last right value is bigger than the left ft's last value
             if MaxRStep_idx(end) > MaxLStep_idx(end)
                 % if so, then trim the last value
                 MaxRStep_idx = MaxRStep_idx(1:end-1);
-                continue % jump - to check whether vectors are now equal
+%                 continue % jump - to check whether vectors are now equal
                 % otherwise, vector will feed to next piece of while loop
+                key3 = 1;
+            else
+                key3 = 0;
             end
         % check if right first value is bigger than the left ft's first value
             if MaxRStep_idx(1) > MaxLStep_idx(1)
                 MaxRStep_idx = MaxRStep_idx(2:end);
+                key4 = 1;
+            else
+                key4 = 0;
             end
-    end % end of nested while loop
+            
+    else
+        key3 = 0; key4 = 0;
+    end % end of nested if loop
     
+    
+    % bring all the key bools together - if all of them are equal to zero,
+    % then the parent key bool will toggle zero, and the loop should stop
+    % looping 
+    if ~any([key1 key2 key3 key4])
+        key = 0;
+    end
+    
+    % ping the counter
+    counter = counter + 1
+    
+
 end % end of big while loop
 
 % now set the values to be the values determined by the indexes!

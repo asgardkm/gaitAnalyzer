@@ -112,13 +112,13 @@ ttl = assignMarkers(marker_all, coord_all, data_all);
 %FRAME
 markernames = fieldnames(clean);
 frame_tmp   = struct2cell(clean.(markernames{find(cellfun(@(word) ~isempty(word), regexp(fieldnames(clean), 'Frame', 'match')))})); % define frames automatically :)
-frame       = cell2mat(frame_tmp{:});
+frame       = cell2mat(frame_tmp);
 % TIME
 % look wheter for a timestamp fieldname exists - if it does, use it, 
 %else, find it by dividing frames by frequency
 if any(cellfun(@(word) ~isempty(word), regexp(fieldnames(clean), 'Time', 'match')))
     time_tmp = struct2cell(clean.(markernames{find(cellfun(@(word) ~isempty(word), regexp(fieldnames(clean), 'Time', 'match')))}));
-    time     = cell2mat(time_tmp{:});
+    time     = cell2mat(time_tmp);
 else
     time     = frame./frequency;           % time (based on camera frequency)
 end
