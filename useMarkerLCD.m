@@ -28,7 +28,10 @@ end
 % find which is the LCD of indexes by finding wich of the newclean is the
 % smallest
 for i = 1 : length(tmpclean)
-    l(i) = length(tmpclean{i}.Frame.Frame{:});
+    tmp_names = fieldnames(tmpclean{i});
+    frame_tmp   = struct2cell(tmpclean{i}.(tmp_names{find(cellfun(@(word) ~isempty(word), regexp(fieldnames(tmpclean{i}), 'Frame', 'match')))})); % define frames automatically :)
+    frame       = cell2mat(frame_tmp{:});
+    l(i) = length(frame);
 end
 
 % lcd - value of smallest - lidx - shows which l(#) is the smallest

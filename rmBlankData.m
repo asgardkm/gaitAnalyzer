@@ -87,7 +87,7 @@ for i = 1: length(dall)
         
     elseif bool == 0
     % find where are empty values based on bools (1's and 0's)
-    empty_idx_all{i} = cellfun(@(idx) (all(idx, 2)), dall{i}, 'uniformoutput', false);
+    empty_idx_all{i} = cellfun(@(idx) (all(idx, 2)), dall, 'uniformoutput', false);
     % find the zeros - indexes where there is nothing
     empty_idx{i}     = cellfun(@(idx) (find(~idx)),  empty_idx_all{i}, 'uniformoutput', false);
     
@@ -207,7 +207,12 @@ for i = 1:length(new_dall)
             % for bool == 0 it doesn't matter whether or not if the j
             % marker meets/exceeds pmiss parameter - cause it doesn't exist
             % here - we are taking flat kill cut
-            tmp_data = cell2mat(clean.(all_name{i}).(tmp_name(j,:))); % assign to tmp variable
+            % check if value is in cell format - if it is, turn to mat
+            if iscell((clean.(all_name{i}).(tmp_name(j,:))))
+                tmp_data = cell2mat(clean.(all_name{i}).(tmp_name(j,:))); % assign to tmp variable
+            else
+                tmp_data = clean.(all_name{i}).(tmp_name(j,:)); % assign to tmp variable
+            end
             tmp_data = tmp_data(cell2mat(good_idx)); % take out the indexes you want
             new.(all_name{i}).(tmp_name(j,:)) = {tmp_data}; % reassign to new struct
             
@@ -227,7 +232,11 @@ if bool == 0
     % i know this will overwrite a previously preallocated matrix
                                             % but i needed that preallocation for it's length for the loop,
     for k = 1 : length(dall)                % and i am too lazy to create a new variable for the loop
+        if iscell(dall{k})
             good_tmp = dall{k}{:}(good_list);% length which would then change things in the bool==1
+        else
+            good_tmp = dall{k}(good_list);
+        end
             new_dall_tmp.(tmp_name(k,:)) = {good_tmp};% decision. So that's why i'm overwriting a created matrix that
     end                                     % was never used (when bool==0 that is)                                    
        new_dall = new_dall_tmp;            
@@ -243,11 +252,20 @@ end
 
 % if the kill_list is straight up empty, then return a message and save
 % kill_list as zero
-if all( cell2mat( (cellfun(@(bool) any(bool==1), kill_list, 'uniformoutput', false)) )  == 0)
-    fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
-    kill_marker = 0;
+if iscell(kill_list)
+    if all( cell2mat( (cellfun(@(bool) any(bool==1), kill_list, 'uniformoutput', false)) )  == 0)
+        fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
+        kill_marker = 0;
+    end
+    fprintf('done\n')
+else
+    if all( cell2mat( (cellfun(@(bool) any(bool==1), {kill_list}, 'uniformoutput', false)) )  == 0)
+        fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
+        kill_marker = 0;
+    end
+    fprintf('done\n')
 end
-fprintf('done\n')
+    
 
 if bool == 0 % assign kill_marker something if bool == 0 b/c it isnt defined
     kill_marker = 0;    

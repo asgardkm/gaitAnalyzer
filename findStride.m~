@@ -86,8 +86,8 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
     %vectorize
     for i = 2 : length(ZeroLStep_idx);  
 
-        [MaxLStep(i,1), ~] = max(YLeftStep(ZeroLStep_idx(i-1,:) : ZeroLStep_idx(i,:)));
-        [MaxRStep(i,1), ~] = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
+        [MaxLStep(i,1), MaxLStep_idx(i,1)] = max(YLeftStep(ZeroLStep_idx(i-1,:) : ZeroLStep_idx(i,:)));
+        [MaxRStep(i,1), MaxRStep_idx(i,1)] = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
 
     end
 
@@ -104,19 +104,19 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
     %    MUST BE CHANGED - DONE BY CHANGING THE GRAPH THAT IS BEING ANALYZED)
 
     %Purge zeroes from data and take averages.
-    MaxLStepall = MaxLStep(MaxLStep~=0);
-    MaxRStepall = MaxRStep(MaxRStep~=0);
+    MaxLStep = MaxLStep(MaxLStep~=0);
+    MaxRStep = MaxRStep(MaxRStep~=0);
 
-%         % activate SUPER loop!
-%     superflag = 1;
-% while superflag == 1
-%         
+        % activate SUPER loop!
+    superflag = 1;
+while superflag == 1
+        
     %when finding the max steps : since the feet alternate, there will be
     %alternating high and low maxes for each foot. We only want the high maxes
     %for each foot - the functions below take care of that by pulling the
     %correct indexes.
-    maxl_idx = bsxfun(@ge, MaxLStepall, MaxRStepall);
-    maxr_idx = bsxfun(@ge, MaxRStepall, MaxLStepall);
+    maxl_idx = bsxfun(@ge, MaxLStep, MaxRStep);
+    maxr_idx = bsxfun(@ge, MaxRStep, MaxLStep);
 
     % 21nov2015 - NEED TO FIND IF ANY ELEMENTS REPEAT 1 - THAT IS, GET THE
     % INDEX OF ANY VALUE 1 THAT SHOULD BE A 0 WHEN CONSIDERING A 101010...
@@ -128,23 +128,23 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
     maxr_ones = find(maxr_idx == 1);
 
     % checking for double-counted left indexes
-    leftcheck1 = find(diff(maxr_idx) == 0) + 1 ;
-    leftcheck2 = find(diff(maxl_idx) == 0) + 1 ; % is the plus one because of the way diff works - we want 
+    leftcheck1 = find(diff(maxr_idx) == 0) + 1 + 1;
+    leftcheck2 = find(diff(maxl_idx) == 0) + 1 + 1; % is the plus one because of the way diff works - we want 
     % to get rid of the index AFTER a difference of one is detected - we don't
     % want to get rid of the index BEFORE the repeat.
     leftcheck  = intersect(leftcheck1, leftcheck2);
-%     leftcheck  = leftcheck(1);
-% 
-%     % checking for double-counted right indexes
-%     rightcheck1 = maxr_ones(diff(maxl_ones) > 2) + 1;
-%     rightcheck2 = maxr_ones(diff(maxr_ones) < 2) + 1;
-%     rightcheck  = intersect(rightcheck1, rightcheck2);
+    leftcheck  = leftcheck(1);
+
+    % checking for double-counted right indexes
+    rightcheck1 = maxr_ones(diff(maxl_ones) > 2) + 1;
+    rightcheck2 = maxr_ones(diff(maxr_ones) < 2) + 1;
+    rightcheck  = intersect(rightcheck1, rightcheck2);
 
     % filter out the check indexes from the max_idx vectors - this will get rid
     % of funny duplicates
     maxl_idx(leftcheck)  = [];
-%     maxl_idx(rightcheck) = [];
-%     maxr_idx(rightcheck) = [];
+    maxl_idx(rightcheck) = [];
+    maxr_idx(rightcheck) = [];
     maxr_idx(leftcheck)  = [];
 
 
@@ -162,8 +162,8 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
     % % afterwards. 
     % %
     % % 19oct2015 - vectorize and use intersect!
-    [~, ~, MaxLStep_idx] = intersect(MaxLStepall, YLeftStep,  'stable');
-    [~, ~, MaxRStep_idx] = intersect(MaxRStepall, YRightStep, 'stable');
+    [~, ~, MaxLStep_idx] = intersect(MaxLStep, YLeftStep,  'stable');
+    [~, ~, MaxRStep_idx] = intersect(MaxRStep, YRightStep, 'stable');
 
 
     % get the MaxStep data from the cleaned up max_idx vectors
@@ -176,12 +176,12 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
 
     % lets try something - if MaxStep_idx vectors aren't matching yet, then do
     % everything above again!
-%     if length(MaxRStep_idx) ~= length(MaxLStep_idx)
-%         superflag = 1;
-%     else
-%         superflag = 0;
-%     end
-% end % end of SUPER while loop
+    if length(MaxRStep_idx) ~= length(MaxLStep_idx)
+        superflag = 1;
+    else
+        superflag = 0;
+    end
+end % end of SUPER while loop
 
 
     %Need to find another parameter in dealing with the little ones, because
@@ -201,8 +201,8 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
     % indexes are all organized
 
     % do a sample counter for while loop
-    counter = 1;
-    
+    counter = 1
+
     % 24nov2015 - will try using "key" flags for restricting while loop,
     % because it is running infinitly - that's not good
     % toggle key to be zero when each of the four conditions below fail to
@@ -273,7 +273,7 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame)
             key = 1;
             
             % ping the counter
-            counter = counter + 1;
+            counter = counter + 1
 
         end
 

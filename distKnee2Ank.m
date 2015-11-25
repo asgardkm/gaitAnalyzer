@@ -46,10 +46,8 @@ RLM  = new_marray{4};
 
 %--end of trimming--------------------------------------------------
 
-
-ldistval = hypot(LLEK.Z - LLM.Z, hypot(LLEK.X - LLM.X, LLEK.Y - LLM.Y));
-rdistval = hypot(RLEK.Z - RLM.Z, hypot(RLEK.X - RLM.X, RLEK.Y - RLM.Y));
-
+ldistval = hypot(LLEK.Z{:} - LLM.Z{:}, hypot(LLEK.X{:} - LLM.X{:}, LLEK.Y{:} - LLM.Y{:}));
+rdistval = hypot(RLEK.Z{:} - RLM.Z{:}, hypot(RLEK.X{:} - RLM.X{:}, RLEK.Y{:} - RLM.Y{:}));
 
 %Left Ankle and Knee:
 ldistavg = mean(ldistval);
@@ -59,6 +57,8 @@ ldiststd = std(ldistval);
 rdistavg = mean(rdistval);
 rdiststd = std(rdistval);
 
+
+%==========================================================================
 % OUTPUTS : ASSIGN VARIABLES TO STRUCTURE
 %          ldist.(avg, std),
 %          rdist.(avg, std)
@@ -67,7 +67,7 @@ ldist.std = ldiststd;
 
 rdist.avg = rdistavg;
 rdist.std = rdiststd;
-
+%==========================================================================
 
 % OLD CoDE : ---------------------------------------------------------
 % LDist = zeros(1, length(LeftKnee));

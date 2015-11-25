@@ -109,7 +109,7 @@ ttl = assignMarkers(marker_all, coord_all, data_all);
 
 % =========================================================================
 % FRAME AND TIME 
-%FRAME
+% FRAME
 markernames = fieldnames(clean);
 frame_tmp   = struct2cell(clean.(markernames{find(cellfun(@(word) ~isempty(word), regexp(fieldnames(clean), 'Frame', 'match')))})); % define frames automatically :)
 frame       = cell2mat(frame_tmp);
