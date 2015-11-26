@@ -3,7 +3,7 @@
 % based on choosing certain markers.
 % author      - Asgard Kaleb Marroquin (University of South Florida)
 % created     - 24aug2015
-% last edited - 16nov2015
+% last edited - 25nov2015
 
 %% INPUTS : DATA PREPARATION
 

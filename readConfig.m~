@@ -1,0 +1,40 @@
+function[] = readConfig()
+% poirpose - set up a function that reads in values established in an
+% external text file
+
+% created 25nov2015 akm
+% last edited 25nov2015 akm
+
+%file name :
+filename = 'mainConfig.txt';
+fdata = fopen(filename, 'r');
+
+% read in the file
+a = ' ';
+i = 1;
+while ischar(a)
+        a  = fgets(fdata);
+        if ischar(a)
+%                 b = sscanf(a, '%f %f');
+%             for j = 1 : length(b)
+                mat{i} = a;
+%             end
+
+            i = i + 1;
+        else
+            break
+        end
+end
+% and then close the connection now that the data is now in matlab as a var
+fclose(fdata);
+
+% define key words for finding the data we want
+
+
+
+
+
+
+
+
+end

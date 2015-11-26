@@ -1,0 +1,85 @@
+********INPUT CONFIGURATION FILE*********,
+
+This file serves as the primary configuration file for the gait analyzing script.
+
+It specifies parameters for selecting raw data column indexes, defines which ground reaction force directions are associated with which X Y Z Cartestian coordinate, and specifies the exposure groups of interest.
+
+% Comments on section 1 inputs : 
+% =========================================================================
+% TEXT INDEXES + FREQUENCY + THRESHOLDS & BOUNDS
+
+% TEXT INDEXES
+%   set the indexes (columns) you wish to use from the text file (include 
+%   forces or whole text file, or use 'default'-reads in all possible data)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PLEASE NOTE!!!! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% IT IS IMPERATIVE THAT YOU SET AND CHANGE COLUMN INDEXES YOU WISH    %%%
+%%% TO SELECT FROM YOUR INPUT DATA IN YOUR TEXT DFLOW FILES             %%%
+%%% - THAT MEANS YOU NEED TO KNOW HOW YOUR DATA IS SET UP INTO ITS      %%%
+%%%   COLUMNS - INPUT BELOW THE COLUMN INDEXES FOR THE MARKERS YOU      %%%
+%%%   WISH TO LOOK AT                                                   %%%
+%%% - OTHERWISE THE CODE WILL RETURN AN ERROR - IT CANNOT GUESS WHAT    %%%
+%%%   COLUMNS AND MARKERS YOU WISH TO LOOK AT!!! (YET :))               %%%
+%%% - 16nov2015 - implenting a 'default' to load EVERYTHING in the raw  %%%
+%%%   data file if txt_idx is not manually changed below. You may or    %%%
+%%%   may not want this because it is not always guaranteed to work!!   %%%
+%%%   (default input arg: txt_idx = 'default');                         %%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% As of right now, only markers that have X Y Z coordinate in the     %%%
+%%% string of the marker are considered when loading up text files!     %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Ignore_idx only currently works if the indexes you wish to skip are %%%
+%%% the very first columns (like columns 1 and 2) - this may not be true%%%
+%%% now, but it hasn't been tested.                                     %%%
+%%%									%%%
+%%% old sample txt_idx examples                                         %%%
+%%% txt_idx = 1:167;                                                    %%%
+%%% txt_idx = 150:167;                                                  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THANK YOU!!! :) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%FREQUENCY OF CAMERAS - defined below
+%THRESHOLDS AND BOUNDS - defined below (do not need to be changed often, if at all, since these are parameters for finding proper gaitcycles from force thresholds, and have been fine tuned over the months so that these following parameters work without issue)
+
+
+__________________________________**SECTION_1**_________________________________
+
+File location and parameters for processing raw concentration and activity data
+!!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
+!!!! NOTE: The keyword **START_CONFIG_INPUTS** (without underscores) initiates data read, and must be placed before the first line of configuration data
+!!!! NOTE: The keyword **END_CONFIG_INPUTS** (without underscores) ends the data read, and must be placed after the last line of configuration data
+!!! This group of keywords is reserved and should not be used anywhere else in this file
+
+================================================================================
+Value,                                 Variable Name,           Description (examples in brackets)
+START CONFIG INPUTS
+default,			       txt_idx,                 marker column indexes you want to select (default-'default')
+1,				       frame_idx,		column which has frame data ('default' will ignore
+2,				       time_idx,    			column which was time data these two columns)   
+[1 2],			 	       ignore_idx,              combine frame_idx and time_idx
+100,			       	       frequency, 		set camera freqeuncy
+5,				       threshold,               set force threshold - for doublestance
+5,				       LFB,                     lower force bound for finding gaitcycles 
+100,  				       UFB,                     upper force bound for finding gaitcycles
+1,				       gc_percent,              percentage of gaitcycle to include in gc vectors (decimal form)	 
+END CONFIG INPUTS
+================================================================================
+
+
+
+
+
+This file is divided into 2 sections.
+The first section defines the location and parameters for processing raw concentration and activity data.
+The second section defines exposure population parameters for calculating commute exposures.
+
