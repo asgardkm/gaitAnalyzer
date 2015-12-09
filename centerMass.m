@@ -1,4 +1,4 @@
-function[centermass] = centerMass(SACR, NAVE, oldclean)
+function[centermass] = centerMass(SACR, NAVE, oldclean, bool)
 % function - finds approximation of center of mass of person
 %  - averages positions of person's sacrum and navel
 %
@@ -10,12 +10,13 @@ function[centermass] = centerMass(SACR, NAVE, oldclean)
 %   marker.NAVE - navel
 %
 % OUPUTS - centermass structure(XYZ) - will be appended to output cell array
+%
 % - NOTE : changing the size of the datafile structure is not necessary
 % here. Since the NAVE and SACR markers have no impact on kinetics and
 % kinematics of gait, it makes no sense to get rid of other indexes of
 % other markers that do, just because there are empty NAVE and SACR indexes
 % lasted edited : 27oct2015(Asgard Kaleb Marroquin)
-
+    
 %==========================================================================
 % FINDING THE POSITON OF THE CENTER OF MASS (AVG OF SACRUM AND NAVEL)
 %==========================================================================
@@ -58,4 +59,5 @@ for i = 1 : length(tmp_names)
     centermass.(tmp_names{i}) = tmp_values{i};
 end
 fprintf('done\n')
+
 end

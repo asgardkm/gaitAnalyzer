@@ -1,4 +1,4 @@
-function[f1, f2] = gcForce(kinetics, gc_info, Strideframes, TimeVector)
+function[f1, f2] = gcForce(gfr1, gfr2, gc_info, Strideframes, TimeVector)
 % function : get forces in each gaitcycle per foot, as well as some
 % parameters about these forces
 % form : blah = gcforce(kinetics, gc_info, Strideframes)
@@ -7,12 +7,12 @@ function[f1, f2] = gcForce(kinetics, gc_info, Strideframes, TimeVector)
 %FINDING THE MEAN AND STD OF FORCE PER GATE CYCLE 
 %==========================================================================
 % assign variables from kinetics
-FS1 = kinetics.gfr1.side;
-FS2 = kinetics.gfr2.side;
-FV1 = kinetics.gfr1.vert;
-FV2 = kinetics.gfr2.vert;
-FH1 = kinetics.gfr1.forw;
-FH2 = kinetics.gfr2.forw;
+FS1 = gfr1.side;
+FS2 = gfr2.side;
+FV1 = gfr1.vert;
+FV2 = gfr2.vert;
+FH1 = gfr1.forw;
+FH2 = gfr2.forw;
 % assign variables from gc_info
 cstart_idx = gc_info.starts;
 V1end_idx  = gc_info.stops;

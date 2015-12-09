@@ -79,54 +79,41 @@ end
 % first step - get gaitcycle!
 %   to do that - need filtered force data - function getGRF()
 % getGRF - has ground reaction forces
-if bool.grf_bool
-    [gfr1, gfr2] = getGRF(clean); 
-end
+[gfr1, gfr2] = getGRF(clean, bool.grf_bool); 
 % =========================================================================
 
 % =========================================================================
 % STEP/STRIDE
 % get step/stride values (time, distance)
-if bool.stride_bool
-    [stride, lstep,rstep] = findStride(clean.LHEE, clean.RHEE, dataparams.frequency, frame);
-end
+[stride, lstep, ... 
+ rstep] = findStride(clean.LHEE, clean.RHEE, dataparams.frequency, frame, bool.stride_bool);
 % =========================================================================
 
 % =========================================================================
 % DISTANCE FROM KNEE TO ANKLE
     % NOTE : LEK = KNEE, LM = ANKL
-if bool.distknee2ank_bool
-    [dist_knee2ank.ldist, dist_knee2ank.rdist] = distKnee2Ank(clean.LLEK,... 
-        clean.RLEK, clean.LLM, clean.RLM, clean);
-end
+[dist_knee2ank.ldist, dist_knee2ank.rdist] = distKnee2Ank(clean.LLEK,... 
+        clean.RLEK, clean.LLM, clean.RLM, clean, );
 % =========================================================================
 
 % =========================================================================
 % CENTER OF MASS
-if bool.centermass_bool
-    centermass = centerMass(clean.SACR, clean.NAVE, clean);
-end
+centermass = centerMass(clean.SACR, clean.NAVE, clean, bool.centermass_bool);
 % =========================================================================
 
 % =========================================================================
 % PROSTHETIC-SHANK RAIO LENGTH
-if bool.shankratio_bool
-    pratio = prostheticShankRatio(dist_knee2ank.ldist.avg, dist_knee2ank.rdist.avg, bool.shankratio_bool);
-end
+pratio = prostheticShankRatio(dist_knee2ank.ldist.avg,dist_knee2ank.rdist.avg, bool.shankratio_bool);
 % =========================================================================
 
 % =========================================================================
 % DOUBLESTANCE
-if bool.dblstance_bool
-    dblstance = dblStance(gfr1.vert, gfr2.vert, time, dataparams.threshold);
-end
+dblstance = dblStance(gfr1.vert, gfr2.vert, time, dataparams.threshold, bool.dblstance_bool);
 % =========================================================================
 
 % =========================================================================
 % CADENCE
-if bool.cadence_bool
-    cadence = cadence(stride.time.avg);
-end
+cadence = cadence(stride.time.avg, bool.cadence_bool);
 % =========================================================================
 
 % =========================================================================
@@ -136,15 +123,10 @@ end
 %
 % =========================================================================
 % GET GAITCYCLES
-if bool.gaitcycle_bool
-    gc.info = getGaitcycle(gfr1.vert, frame, time, stride.time, dataparams.LFB, ...
-                           dataparams.UFB, dataparams.gc_percent);
-end
+gc.info = getGaitcycle(gfr1.vert, frame, time, stride.time, dataparams.LFB, dataparams.UFB, dataparams.gc_percent);
 % =========================================================================
 
 % =========================================================================
 % GAITCYCLE GAIT REACTION FORCES
-if bool.gcforce_bool
-    [gc.f1, gc.f2] = gcForce(gfr1, gfr2, gc.info, stride.time.time_in_frames, time);
-end
+[gc.f1, gc.f2] = gcForce(gfr1, gfr2, gc.info, stride.time.time_in_frames, time);
 % =========================================================================

@@ -4,8 +4,8 @@ function[pRatio] = prostheticShankRatio(ldistavg, rdistavg)
 % form  : pRatio = prostheticShankRatio(ldistavg, rdistavg)
 % INPUT : -ldistavg - left shank length
 %         -rdistavg - right shank length
-%           note both inputs are from kinematics.dist_knee2ank.ldist
-%         (dist_Knee2Ank.m function)
+%           note both inputs are from kinematics.dist_knee2ank.ldist (dist_Knee2Ank.m function)
+%
 % OUTPUT : pRatio - ratio of shorter dist shank length to higher dist shank
 %          length
 % created : 27oct2015 (Asgard Kaleb Marroquin)

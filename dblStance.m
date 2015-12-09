@@ -3,6 +3,7 @@ function[dblstance] = dblStance(FV1, FV2, Time, threshold)
 %
 % created - 27oct2015 (AKM)
 % last edited - 27oct2015 (AKM)
+
 %==========================================================================
 % FINDING THE DOUBLE STANCE TIME
 %==========================================================================

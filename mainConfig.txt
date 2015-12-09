@@ -4,6 +4,10 @@ This file serves as the primary configuration file for the gait analyzing script
 
 It specifies parameters for selecting raw data column indexes, defines which ground reaction force directions are associated with which X Y Z Cartestian coordinate, and specifies the exposure groups of interest.
 
+This file is divided into 2 sections.
+The first section defines data parameters for data input and gait analysis
+The second section defines markers to check the existance in order to process their respective function calls for gait analysis
+
 % Comments on section 1 inputs : 
 % =========================================================================
 % TEXT INDEXES + FREQUENCY + THRESHOLDS & BOUNDS
@@ -34,7 +38,6 @@ It specifies parameters for selecting raw data column indexes, defines which gro
 %%% string of the marker are considered when loading up text files!     %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 %%% Ignore_idx only currently works if the indexes you wish to skip are %%%
 %%% the very first columns (like columns 1 and 2) - this may not be true%%%
 %%% now, but it hasn't been tested.                                     %%%
@@ -51,10 +54,9 @@ It specifies parameters for selecting raw data column indexes, defines which gro
 %FREQUENCY OF CAMERAS - defined below
 %THRESHOLDS AND BOUNDS - defined below (do not need to be changed often, if at all, since these are parameters for finding proper gaitcycles from force thresholds, and have been fine tuned over the months so that these following parameters work without issue)
 
-
 __________________________________**SECTION_1**_________________________________
 
-File location and parameters for processing raw concentration and activity data
+File location and parameters for configuring data input reading and gait anaylsis
 !!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
 !!!! NOTE: The keyword **START_CONFIG_INPUTS** (without underscores) initiates data read, and must be placed before the first line of configuration data
 !!!! NOTE: The keyword **END_CONFIG_INPUTS** (without underscores) ends the data read, and must be placed after the last line of configuration data
@@ -76,10 +78,28 @@ END CONFIG INPUTS
 ================================================================================
 
 
+__________________________________**SECTION_2**_________________________________
 
+Marker strings to check for in order to trigger bools for runnig parameter functions
+!!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
+!!!! NOTE: The keyword **START_MARKERSTRING_INPUTS** (without underscores) initiates data read, and must be placed before the first line of configuration data
+!!!! NOTE: The keyword **END_MARKERSTRING_INPUTS** (without underscores) ends the data read, and must be placed after the last line of configuration data
+!!! This group of keywords is reserved and should not be used anywhere else in this file
 
+================================================================================
+Value,                          Variable Name,  Description (examples in brackets)
+START MARKERSTRING INPUTS
+SACR,				sacr_str,	needed for centerMass.m
+NAVE,				nave_str,	needed for centerMass.m
+LLEK,				llek_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
+RLEK,				rlek_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
+LLM,				llm_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
+RLM,				rlm_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
+LHEE,				lhee_str,	needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m 
+RHEE,				rhee_str,	needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m
+FP1,				fp1_str,	needed for dlbStance.m, getGaitcycle.m, gcForce.m
+FP2,				fp2_str,	needed for dlbStance.m, getGaitcycle.m, gcForce.m
+END MARKERSTRING INPUTS
+================================================================================
 
-This file is divided into 2 sections.
-The first section defines the location and parameters for processing raw concentration and activity data.
-The second section defines exposure population parameters for calculating commute exposures.
 

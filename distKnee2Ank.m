@@ -4,7 +4,7 @@ function[ldist, rdist] = distKnee2Ank(LLEK, RLEK, LLM, RLM, clean)
 % INPUTS : LLEK - left knee
 %          RLEK - right knee
 %          LLM  - left ankle
-%          RLM  - right ankle           
+%          RLM  - right ankle 
 % OUPUTS - ldist.(avg, std),
 %          rdist.(avg, std),
 %          newclean - updated clean data structure
@@ -33,60 +33,59 @@ function[ldist, rdist] = distKnee2Ank(LLEK, RLEK, LLM, RLM, clean)
 % [newclean, ~, LLM] =  rmBlankData(newclean, LLM,  8, 0); % and LLM
 % [newclean, ~, RLM] =  rmBlankData(newclean, RLM,  8, 0); % and RLM
 
-marray  = {LLEK RLEK LLM RLM};
-str_ray = {varname(LLEK) varname(RLEK) varname(LLM) varname(RLM)}; 
-all_str = fieldnames(clean);
-% run function for input cells - take mean of the XYZ cell arrays of the
-% SACR and the NAVE to find center of mass
-new_marray = useMarkerLCD(marray, str_ray, all_str, clean);
-LLEK = new_marray{1};
-RLEK = new_marray{2};
-LLM  = new_marray{3};
-RLM  = new_marray{4};
+    marray  = {LLEK RLEK LLM RLM};
+    str_ray = {varname(LLEK) varname(RLEK) varname(LLM) varname(RLM)}; 
+    all_str = fieldnames(clean);
+    % run function for input cells - take mean of the XYZ cell arrays of the
+    % SACR and the NAVE to find center of mass
+    new_marray = useMarkerLCD(marray, str_ray, all_str, clean);
+    LLEK = new_marray{1};
+    RLEK = new_marray{2};
+    LLM  = new_marray{3};
+    RLM  = new_marray{4};
 
-%--end of trimming--------------------------------------------------
+    %--end of trimming--------------------------------------------------
 
-ldistval = hypot(LLEK.Z{:} - LLM.Z{:}, hypot(LLEK.X{:} - LLM.X{:}, LLEK.Y{:} - LLM.Y{:}));
-rdistval = hypot(RLEK.Z{:} - RLM.Z{:}, hypot(RLEK.X{:} - RLM.X{:}, RLEK.Y{:} - RLM.Y{:}));
+    ldistval = hypot(LLEK.Z{:} - LLM.Z{:}, hypot(LLEK.X{:} - LLM.X{:}, LLEK.Y{:} - LLM.Y{:}));
+    rdistval = hypot(RLEK.Z{:} - RLM.Z{:}, hypot(RLEK.X{:} - RLM.X{:}, RLEK.Y{:} - RLM.Y{:}));
 
-%Left Ankle and Knee:
-ldistavg = mean(ldistval);
-ldiststd = std(ldistval);
+    %Left Ankle and Knee:
+    ldistavg = mean(ldistval);
+    ldiststd = std(ldistval);
 
-%Right Ankle and Knee:
-rdistavg = mean(rdistval);
-rdiststd = std(rdistval);
+    %Right Ankle and Knee:
+    rdistavg = mean(rdistval);
+    rdiststd = std(rdistval);
 
 
-%==========================================================================
-% OUTPUTS : ASSIGN VARIABLES TO STRUCTURE
-%          ldist.(avg, std),
-%          rdist.(avg, std)
-ldist.avg = ldistavg;
-ldist.std = ldiststd;
+    %==========================================================================
+    % OUTPUTS : ASSIGN VARIABLES TO STRUCTURE
+    %          ldist.(avg, std),
+    %          rdist.(avg, std)
+    ldist.avg = ldistavg;
+    ldist.std = ldiststd;
 
-rdist.avg = rdistavg;
-rdist.std = rdiststd;
-%==========================================================================
+    rdist.avg = rdistavg;
+    rdist.std = rdiststd;
+    %==========================================================================
 
-% OLD CoDE : ---------------------------------------------------------
-% LDist = zeros(1, length(LeftKnee));
-% RDist = zeros(1, length(RightKnee));
-% 
-% for i = 1:length(LeftKnee);
-%     LDist(i) = sqrt((ZLeftKnee(i) - ZLeftAnkle(i))^2 + (YLeftKnee(i) - YLeftAnkle(i))^2);
-%     RDist(i) = sqrt((ZRightKnee(i) - ZRightAnkle(i))^2 + (YRightKnee(i) - YRightAnkle(i))^2);
-% end
-% 
-% %Need to change RDist for V_PS1 de to NaN's in data
-% RDist = RDist(27:end);
-% 
-% %Left Ankle and Knee:
-% LDistAvg = mean(LDist);
-% LDistStd = std(LDist);
-% 
-% %Right Ankle and Knee:
-% RDistAvg = mean(RDist);
-% RDistStd = std(RDist);
-% 
+    % OLD CoDE : ---------------------------------------------------------
+    % LDist = zeros(1, length(LeftKnee));
+    % RDist = zeros(1, length(RightKnee));
+    % 
+    % for i = 1:length(LeftKnee);
+    %     LDist(i) = sqrt((ZLeftKnee(i) - ZLeftAnkle(i))^2 + (YLeftKnee(i) - YLeftAnkle(i))^2);
+    %     RDist(i) = sqrt((ZRightKnee(i) - ZRightAnkle(i))^2 + (YRightKnee(i) - YRightAnkle(i))^2);
+    % end
+    % 
+    % %Need to change RDist for V_PS1 de to NaN's in data
+    % RDist = RDist(27:end);
+    % 
+    % %Left Ankle and Knee:
+    % LDistAvg = mean(LDist);
+    % LDistStd = std(LDist);
+    % 
+    % %Right Ankle and Knee:
+    % RDistAvg = mean(RDist);
+    % RDistStd = std(RDist);
 end

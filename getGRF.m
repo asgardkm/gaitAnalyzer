@@ -1,7 +1,8 @@
 function[f1, f2] = getGRF(clean)
 % function - find ground force reactions
-% form     : grf = getGRF(clean)
+% form     : grf = getGRF(clean, bool)
 %    input : clean - structure with all trial data 
+%            proceed with function
 %   output : grf   - list with ground force reactions (xyz) for 2 feet 
 %       created : 16oct2015
 %       last edited : 19oct2015
@@ -22,6 +23,5 @@ f1.forw = FilterMe(clean.FP1For.Z, 2, 0.1);
 f2.side = FilterMe(clean.FP2For.X, 2, 0.1);
 f2.vert = FilterMe(clean.FP2For.Y, 2, 0.1);
 f2.forw = FilterMe(clean.FP2For.Z, 2, 0.1);
-
 
 end
