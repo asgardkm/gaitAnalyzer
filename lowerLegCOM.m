@@ -45,6 +45,16 @@ rtoe = new_marray{8};
 
 %--------------end of trimming---------------------------------------------
 
+% define cells:
+lfoot = cell(size(ltoe));
+rfoot = cell(size(rtoe));
+lcalf = cell(size(llek));
+rcalf = cell(size(rlek));
+lfootcalf = cell(size(lfoot));
+rfootcalf = cell(size(rfoot));
+lfootcalf_vrad = cell(size(lfootcalf));
+rfootcalf_vrad = cell(size(rfootcalf));
+
 %If Normal Walking is present:
 if ~isempty(regexp(trialfile, 'NW', 'ONCE'))
     %Calf Center of Mass - Based on paper : COM is 43.3% of calf (below the knee)
@@ -66,7 +76,7 @@ else %HOW TO FIND COM OF THE PROSTHESES? (left leg stays the same - right is pro
     %Calf COM = Knee Marker
     %Foot COM = Ankle Marker   
     
-    for i = 1 : length(YLeftKnee);
+    for i = 1 : length(rtoe);
         lcalf{i} = llek{i}{:} - ( (llek{i}{:} - llm{i}{:}) * 0.433 );% left calf COM  
         rcalf{i} = rlek{i}{:}; % right calf COM
 
@@ -87,21 +97,15 @@ for i = 1 : length(rtoe);
 end
 
 %Get radius! from knee to the (x,y,z) coordinate of the COM just found:
-for i = 1 : length(LCF_YCOM);
-   %Left i hat and j hat components of the radius
-   %Also, change from mm to m
-   LCF_YCOM_R(i,:) = (YLeftKnee(i,:) - LCF_YCOM(i,:));
-   LCF_ZCOM_R(i,:) = (ZLeftKnee(i,:) - LCF_ZCOM(i,:));
-   lf
-   %Right i hat and j hat components of the radius
-   RCF_YCOM_R(i,:) = (YRightKnee(i,:) - RCF_YCOM(i,:));
-   RCF_ZCOM_R(i,:) = (ZRightKnee(i,:) - RCF_ZCOM(i,:));
+for i = 1 : length(rtoe);
+   %Left i hat j hat k hat components of the radius
+   lfootcalf_vrad{i} = llek{i}{:} - lfootcalf{i};
+   %Right i hat j hat k hat components of the radius
+   rfootcalf_vrad{i} = rlek{i}{:} - rfootcalf{i};
 end
 
 %Find the magnitude of the radius - Pythagoras
-for i = 1 : length(LCF_YCOM_R);
-    LCF_COM_R(i,:) = sqrt((LCF_YCOM_R(i,:)^2) + (LCF_ZCOM_R(i,:)^2));
-    RCF_COM_R(i,:) = sqrt((RCF_YCOM_R(i,:)^2) + (RCF_ZCOM_R(i,:)^2));
-end
+lfootcalf_rad = sqrt(lfootcalf_vrad{1}.^2 + lfootcalf_vrad{2}.^2 + lfootcalf_vrad{3}.^2);
+rfootcalf_rad = sqrt(rfootcalf_vrad{1}.^2 + rfootcalf_vrad{2}.^2 + rfootcalf_vrad{3}.^2);
 
 end

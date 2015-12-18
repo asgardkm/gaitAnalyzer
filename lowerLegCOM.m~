@@ -80,32 +80,22 @@ end % end of shank/foot com calculations
 %Equation for Combining two masses to find one center of mass:
 %x(cm) = (m1x1+m2x2)/(m1+m2)
 for i = 1 : length(rtoe);
-    %Left Y Component
-    l{i} = ( (mass.lcalf * lcalf{i}) + (mass.lfoot * lfoot{i}) ) / (mass.lcalf + mass.lfoot);
-    %Left Z Component
-    LCF_ZCOM(i,:) = ((LCalf * LCalf_ZCOM(i,:)) + (LFoot * LFoot_ZCOM(i,:)))/(LCalf+LFoot);
-    
-    %Right Y Component
-    RCF_YCOM(i,:) = ((RCalf * RCalf_YCOM(i,:)) + (RFoot * RFoot_YCOM(i,:)))/(RCalf+RFoot);
-    %Right Z Component
-    RCF_ZCOM(i,:) = ((RCalf * RCalf_ZCOM(i,:)) + (RFoot * RFoot_ZCOM(i,:)))/(RCalf+RFoot);
+    % Left lower leg system
+    lfootcalf{i} = ( (mass.lcalf * lcalf{i}) + (mass.lfoot * lfoot{i}) ) / (mass.lcalf + mass.lfoot);
+    % Right lower leg system
+    rfootcalf{i} = ( (mass.rcalf * rcalf{i}) + (mass.rfoot * rfoot{i}) ) / (mass.rcalf + mass.rfoot);
 end
 
-%Get radius! from knee to the (y,z) coordinate of the COM just found:
-
-%Finding the y and z components of the radius
+%Get radius! from knee to the (x,y,z) coordinate of the COM just found:
 for i = 1 : length(LCF_YCOM);
-   %Left i hat and j hat components of the radius
-   %Also, change from mm to m
-   LCF_YCOM_R(i,:) = (YLeftKnee(i,:) - LCF_YCOM(i,:))./1000;
-   LCF_ZCOM_R(i,:) = (ZLeftKnee(i,:) - LCF_ZCOM(i,:))./1000;
-   
-   %Right i hat and j hat components of the radius
-   RCF_YCOM_R(i,:) = (YRightKnee(i,:) - RCF_YCOM(i,:))./1000;
-   RCF_ZCOM_R(i,:) = (ZRightKnee(i,:) - RCF_ZCOM(i,:))./1000;
+   %Left i hat j hat k hat components of the radius
+   lfootcalf_vrad{i} = llek{i} - lfootcalf{i};
+   %Right i hat j hat k hat components of the radius
+   rfootcalf_vard{i} = rlek{i} - rfootcalf{i};
 end
 
 %Find the magnitude of the radius - Pythagoras
+lffotcalf_vrad
 for i = 1 : length(LCF_YCOM_R);
     LCF_COM_R(i,:) = sqrt((LCF_YCOM_R(i,:)^2) + (LCF_ZCOM_R(i,:)^2));
     RCF_COM_R(i,:) = sqrt((RCF_YCOM_R(i,:)^2) + (RCF_ZCOM_R(i,:)^2));
