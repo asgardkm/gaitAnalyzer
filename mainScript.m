@@ -3,10 +3,10 @@
 % based on choosing certain markers.
 % author      - Asgard Kaleb Marroquin (University of South Florida)
 % created     - 24aug2015
-% last edited - 8dec2015 % integrated mainConfig.txt readConfig.m function
+% last edited - 9dec2015    integrated mainConfig.txt readConfig.m function
+%                           and bools
 
 %% INPUTS : DATA PREPARATION
-
 % =========================================================================
 % set your work directory
 setMyWD();
@@ -18,8 +18,8 @@ setMyWD();
 % =========================================================================
 
 % =========================================================================
+% PRELIMINARY SETUP / DATA SELECTION
 %determine OS
-% 10nov2015 - ERROR WITH READING IN SAMPLE TEXT FILES - WHY?
 [pc_os, unix_os] = determineOS();
 [csv_str, txt_str] = formatStrings(unix_os, pc_os);
 % either create or choose pre-existing combined trial data and get it's
@@ -49,8 +49,8 @@ ttl = assignMarkers(marker_all, coord_all, data_all);
 % input strings can be provided by mainConfig.txt
 bool = checkExistance(markerstring, clean);
 
-%% LET THE APPLICATIONS BEGIN!
 
+%% LET THE APPLICATIONS BEGIN!
 % =========================================================================
 % FRAME AND TIME 
 % FRAME
@@ -68,12 +68,10 @@ else
 end
 % =========================================================================
 
-
 % =========================================================================
 %                       PARAMETERS W/O GAITCYCLES
 % =========================================================================
-%
-%
+
 % =========================================================================
 % GROUND REACTION FORCES
 % first step - get gaitcycle!
@@ -104,14 +102,14 @@ end
 % =========================================================================
 % CENTER OF MASS
 if bool.centermass_bool
-    centermass = centerMass(clean.SACR, clean.NAVE, clean);
+    centermass = centerMass(clean.SACR, clean.NAVE, clean, 1);
 end
 % =========================================================================
 
 % =========================================================================
 % PROSTHETIC-SHANK RAIO LENGTH
 if bool.shankratio_bool
-    pratio = prostheticShankRatio(dist_knee2ank.ldist.avg, dist_knee2ank.rdist.avg, bool.shankratio_bool);
+    pratio = prostheticShankRatio(dist_knee2ank.ldist.avg, dist_knee2ank.rdist.avg);
 end
 % =========================================================================
 
@@ -125,15 +123,15 @@ end
 % =========================================================================
 % CADENCE
 if bool.cadence_bool
-    cadence = cadence(stride.time.avg);
+    cadence = Cadence(stride.time.avg);
 end
 % =========================================================================
+
 
 % =========================================================================
 %                       PARAMETERS W/ GAITCYCLES
 % =========================================================================
-%
-%
+
 % =========================================================================
 % GET GAITCYCLES
 if bool.gaitcycle_bool
@@ -147,4 +145,39 @@ end
 if bool.gcforce_bool
     [gc.f1, gc.f2] = gcForce(gfr1, gfr2, gc.info, stride.time.time_in_frames, time);
 end
+% =========================================================================
+
+% =========================================================================
+% JOINT ANGLES
+if bool.jointangle_bool
+    gc.angle = jointAngle(clean.LLEK, clean.RLEK, clean.LLM, clean.RLM, clean.LGTRO, ... 
+                          clean.RGTRO,clean.LTOE, clean.RTOE, gc.info, ...
+                          stride.time.time_in_frames, time);
+end
+% =========================================================================
+
+% =========================================================================
+% JOINT ANGLE VELOCITY
+if bool.jointanglevel_bool
+    [gc.angleVel, LKVshift] = jointAngleVelocity(gc.angle, gc.info, stride.time.time_in_frames, time, 1);
+end
+% =========================================================================
+
+% =========================================================================
+% JOINT ANGLE ACCELERATION
+if bool.jointangleacc_bool
+    [gc.angleAcc, LKVshift] = jointAngleVelocity(gc.angleVel, gc.info, stride.time.time_in_frames, time, 2);
+end
+% =========================================================================
+
+% =========================================================================
+% WEIGHT / MASS
+if bool.gcforce_bool % this couldn't run w/o gcforce
+    [weight, weightidx, mass] = weightMass(trialfile, dataparams, gc.f1);
+end
+% =========================================================================
+
+% =========================================================================
+% 
+
 % =========================================================================

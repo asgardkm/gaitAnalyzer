@@ -20,7 +20,7 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame, bool)
 %==========================================================================
 %FINDING THE STEP DISTANCE OF BOTH FEET
 %==========================================================================
-
+fprintf('Finding trial step parameters')
 %     YLeftStep  = RHEE.Y - LHEE.Y;
 %     YRightStep = LHEE.Y - RHEE.Y;
 %     
@@ -91,7 +91,7 @@ for i = 2 : length(ZeroLStep_idx);
 
     [MaxLStep(i,1), ~] = max(YLeftStep(ZeroLStep_idx(i-1,:) : ZeroLStep_idx(i,:)));
     [MaxRStep(i,1), ~] = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
-
+    fprintf('.')
 end
 
 %NOTE: POSITIVE MAXIMUM OF RIGHT HEEL - LEFT HEEL ( OR YLEFTSTEP) IS A LEFT HEEL
@@ -280,7 +280,7 @@ while key == 1;
 
     end
 
-
+fprintf('-')
 end % end of big while loop
 
 
@@ -288,10 +288,13 @@ end % end of big while loop
 MaxLStep = YLeftStep(MaxLStep_idx);
 MaxRStep = YRightStep(MaxRStep_idx);
 
+fprintf('done (lstep,rstep)\n') % fprintf for finished calculating step data
 % CONFIGURING OUTPUTS
 %==========================================================================
 %CALCULATING THE STRIDE AND STEP DISTANCES
 %==========================================================================
+fprintf('Finding trial stride parameters...')
+
 %Stride
 %Stride = Right step + Left step
 Stride = bsxfun(@plus, MaxRStep, MaxLStep);
@@ -359,6 +362,8 @@ StridetimeStd = std(Stridetime);
 
 %Average STRIDE "Time" in frameS
 Stridetimeframes = StridetimeAvg*frequency;
+
+fprintf('done (stride)\n') % fprintf for finished calculating stride data
 
 % Outputs
 % ouputs : stride.(dist/time).(avg, std, vector/time_in_frames),

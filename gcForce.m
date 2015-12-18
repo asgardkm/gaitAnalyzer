@@ -1,11 +1,12 @@
 function[f1, f2] = gcForce(gfr1, gfr2, gc_info, Strideframes, TimeVector)
 % function : get forces in each gaitcycle per foot, as well as some
 % parameters about these forces
-% form : blah = gcforce(kinetics, gc_info, Strideframes)
+% form : [f1, f2] = gcforce(kinetics, gc_info, Strideframes)
 
 %==========================================================================
 %FINDING THE MEAN AND STD OF FORCE PER GATE CYCLE 
 %==========================================================================
+fprintf('Finding gaitcycle ground reaction forces...')
 % assign variables from kinetics
 FS1 = gfr1.side;
 FS2 = gfr2.side;
@@ -26,20 +27,12 @@ f1_side_matrix = gcpicker(FS1, cstart_idx, V1end_idx);
 f2_side_matrix = gcpicker(FS2, cstart_idx, V1end_idx);
 
 % get parameters for f1
-f1.vert = getMaxParams(f1_vert_matrix, Strideframes, TimeVector);
-f1.forw = getMaxParams(f1_forw_matrix, Strideframes, TimeVector);
-f1.side = getMaxParams(f1_side_matrix, Strideframes, TimeVector);
+f1.vert = getMaxParams(f1_vert_matrix, FV1, Strideframes, TimeVector);
+f1.forw = getMaxParams(f1_forw_matrix, FH1, Strideframes, TimeVector);
+f1.side = getMaxParams(f1_side_matrix, FS1, Strideframes, TimeVector);
 % get parameters for f2
-f2.vert = getMaxParams(f2_vert_matrix, Strideframes, TimeVector);
-f2.forw = getMaxParams(f2_forw_matrix, Strideframes, TimeVector);
-f2.side = getMaxParams(f2_side_matrix, Strideframes, TimeVector);
-
-% append the matrix above to either f1 or f2
-f1.vert.matrix = f1_vert_matrix;
-f1.forw.matrix = f1_forw_matrix;
-f1.side.matrix = f1_side_matrix;
-f2.vert.matrix = f2_vert_matrix;
-f2.forw.matrix = f2_forw_matrix;
-f2.side.matrix = f2_side_matrix;
-
+f2.vert = getMaxParams(f2_vert_matrix, FV2, Strideframes, TimeVector);
+f2.forw = getMaxParams(f2_forw_matrix, FH2, Strideframes, TimeVector);
+f2.side = getMaxParams(f2_side_matrix, FS1, Strideframes, TimeVector);
+fprintf('done (gc.f1, gc.f2)\n')
 end

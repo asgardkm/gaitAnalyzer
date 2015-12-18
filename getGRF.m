@@ -14,6 +14,7 @@ function[f1, f2] = getGRF(clean)
 %==========================================================================
 %                       FINDING THE GROUND REACTION FORCES
 %==========================================================================
+fprintf('Finding ground reaction forces...')
 %assign forces in clean to variables
 %Filter the force values with the FilterMe function for smoother graphs
 f1.side = FilterMe(clean.FP1For.X, 2, 0.1);
@@ -24,4 +25,5 @@ f2.side = FilterMe(clean.FP2For.X, 2, 0.1);
 f2.vert = FilterMe(clean.FP2For.Y, 2, 0.1);
 f2.forw = FilterMe(clean.FP2For.Z, 2, 0.1);
 
+fprintf('done (grf1, grf2)\n')
 end

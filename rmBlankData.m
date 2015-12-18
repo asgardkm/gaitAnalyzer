@@ -1,6 +1,6 @@
-function[new, kill_marker, new_dall] = rmBlankData(clean, dall, percent_missing_threshold, bool)
+function[new, kill_marker, new_dall] = rmBlankData(clean, dall, percent_missing_threshold, bool, verbose)
 %function - gets rid of any blank data that may exist in data structure
-% FORM    : [new, kill_marker] = rmBlankData(clean, dall, percent_missing_threshold, bool)
+% FORM    : [new, kill_marker] = rmBlankData(clean, dall, percent_missing_threshold, bool, verbose)
 %
 % INPUTS  : -clean - structure with all the markers
 %           -dall - list with raw data for marker(s) (for bool == 1 - it is
@@ -9,6 +9,7 @@ function[new, kill_marker, new_dall] = rmBlankData(clean, dall, percent_missing_
 %               determining what goes on the kill list
 %           -bool - if 1 : removes markers w/ missing-data ratios greater than theshold scalar
 %                  if 0 : removes indexes from clean for dall indexes w/ empty data values
+%           -verbose - show fprintf statements
 %
 % OUTPUTS : new - updated clean structure
 %           kill_marker - list of names of markers killed
@@ -32,8 +33,9 @@ function[new, kill_marker, new_dall] = rmBlankData(clean, dall, percent_missing_
 %       HALF THAN PULL FROM THE IDX THAT ARE NONZERO
 % ...
 % this is that function :)
-
-fprintf('Cleaning data values :\n')    
+if verbose
+    fprintf('Cleaning data values :\n')    
+end
 
 % percent_missing_threshold = 0.5
 
@@ -56,7 +58,11 @@ kill_list       = cell(size(dall));
 if isstruct(dall)
     dall = struct2cell(dall);
 end
-fprintf('   finding markers missing at least %2.0f%% of total data', percent_missing_threshold*100)
+
+if verbose
+    fprintf('   finding markers missing at least %2.0f%% of total data', percent_missing_threshold*100)
+end
+
 for i = 1: length(dall)
 
     if bool == 1 
@@ -102,10 +108,15 @@ for i = 1: length(dall)
     
     %assign kill_idx found to an evergrowing cell array kill_list
 %     kill_list{i}    = kill_idx;
+    if verbose
+        fprintf('.')
+    end
     
-    fprintf('.')
 end
-fprintf('-done\n')
+
+if verbose
+    fprintf('-done\n')
+end
 % % 15oct2015 - is this needed??? --------------------
 % %%4oct2015 - now that i have the indexes that exceed the threshold - i
 % %%need to filter out the data i have based from these indexes.
@@ -136,19 +147,21 @@ fprintf('-done\n')
 % - resorting to nested for loops (ugh)
 
 q = 1; % this is for idx for assigning kill_marker names
-if bool == 1
-    fprintf('   removing markers missing at least %2.0f%% of total data', percent_missing_threshold*100)
-    
-elseif bool == 0 && isempty(kill_list) == 0
-    % finding name of dall is too much of a hassle and will not benefit
-    % much b/c the user inputs the marker him/herself - ignoring (27oct2015)
-    %   can instead just display simple message
-    fprintf('   removing missing indexes for entire dataset\n')
-%     tmpname     = fieldnames(clean); % save names of markers into strings
-%     tmpname_idx = find() 
-    % and then pull out the right one for fprintf below;
-%     fprintf('   removing missing indexes based from marker %s for entire dataset', dall)
-end
+if verbose
+    if bool == 1
+        fprintf('   removing markers missing at least %2.0f%% of total data', percent_missing_threshold*100)
+
+    elseif bool == 0 && isempty(kill_list) == 0
+        % finding name of dall is too much of a hassle and will not benefit
+        % much b/c the user inputs the marker him/herself - ignoring (27oct2015)
+        %   can instead just display simple message
+        fprintf('   removing missing indexes for entire dataset\n')
+    %     tmpname     = fieldnames(clean); % save names of markers into strings
+    %     tmpname_idx = find() 
+        % and then pull out the right one for fprintf below;
+    %     fprintf('   removing missing indexes based from marker %s for entire dataset', dall)
+    end
+end % end of verbose bool if
 
 
 % preallocate a cell vector new_dall - only if bool==1 (b/c clean.coords
@@ -219,7 +232,9 @@ for i = 1:length(new_dall)
        end % end bool if decision
         
    end % end of j loop
+   if verbose
    fprintf('.')
+   end
 end % end of i loop
 
 % display killed indexes given that bool == 0 is true
@@ -243,27 +258,39 @@ if bool == 0
        clear new_dall_tmp
 end  
    
-
-if isempty(kill_list) == 0 && bool == 0 % display when the kill_list isnt empty
-    fprintf('   removed following blank indexes from dataset\n : ')
-    fprintf(' %g ', char(kill_list));
-    fprintf('\n')
-end 
-
+if verbose
+    if isempty(kill_list) == 0 && bool == 0 % display when the kill_list isnt empty
+        fprintf('   removed following blank indexes from dataset\n : ')
+        fprintf(' %g ', char(kill_list));
+        fprintf('\n')
+    end 
+end
 % if the kill_list is straight up empty, then return a message and save
 % kill_list as zero
+
+% note - may be able to encompase whole if statement within a verbose if,
+% but not sure if it will affect subsequent runs by unintentionally leaving
+% out kill_marker value when calling function w/ verbose=false
 if iscell(kill_list)
     if all( cell2mat( (cellfun(@(bool) any(bool==1), kill_list, 'uniformoutput', false)) )  == 0)
-        fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
+        if verbose
+            fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
+        end
         kill_marker = 0;
     end
-    fprintf('done\n')
+    if verbose
+        fprintf('done\n')
+    end
 else
     if all( cell2mat( (cellfun(@(bool) any(bool==1), {kill_list}, 'uniformoutput', false)) )  == 0)
-        fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
+        if verbose
+            fprintf('\nNo markers removed! - all have at least %f% data\n', percent_missing_threshold*100)
+        end
         kill_marker = 0;
     end
-    fprintf('done\n')
+    if verbose
+        fprintf('done\n')
+    end
 end
     
 

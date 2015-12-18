@@ -3,10 +3,10 @@
 % based on choosing certain markers.
 % author      - Asgard Kaleb Marroquin (University of South Florida)
 % created     - 24aug2015
-% last edited - 8dec2015 % integrated mainConfig.txt readConfig.m function
+% last edited - 9dec2015    integrated mainConfig.txt readConfig.m function
+%                           and bools
 
 %% INPUTS : DATA PREPARATION
-
 % =========================================================================
 % set your work directory
 setMyWD();
@@ -18,8 +18,8 @@ setMyWD();
 % =========================================================================
 
 % =========================================================================
+% PRELIMINARY SETUP / DATA SELECTION
 %determine OS
-% 10nov2015 - ERROR WITH READING IN SAMPLE TEXT FILES - WHY?
 [pc_os, unix_os] = determineOS();
 [csv_str, txt_str] = formatStrings(unix_os, pc_os);
 % either create or choose pre-existing combined trial data and get it's
@@ -49,8 +49,8 @@ ttl = assignMarkers(marker_all, coord_all, data_all);
 % input strings can be provided by mainConfig.txt
 bool = checkExistance(markerstring, clean);
 
-%% LET THE APPLICATIONS BEGIN!
 
+%% LET THE APPLICATIONS BEGIN!
 % =========================================================================
 % FRAME AND TIME 
 % FRAME
@@ -68,65 +68,110 @@ else
 end
 % =========================================================================
 
-
 % =========================================================================
 %                       PARAMETERS W/O GAITCYCLES
 % =========================================================================
-%
-%
+
 % =========================================================================
 % GROUND REACTION FORCES
 % first step - get gaitcycle!
 %   to do that - need filtered force data - function getGRF()
 % getGRF - has ground reaction forces
-[gfr1, gfr2] = getGRF(clean, bool.grf_bool); 
+if bool.grf_bool
+    [gfr1, gfr2] = getGRF(clean); 
+end
 % =========================================================================
 
 % =========================================================================
 % STEP/STRIDE
 % get step/stride values (time, distance)
-[stride, lstep, ... 
- rstep] = findStride(clean.LHEE, clean.RHEE, dataparams.frequency, frame, bool.stride_bool);
+if bool.stride_bool
+    [stride, lstep,rstep] = findStride(clean.LHEE, clean.RHEE, dataparams.frequency, frame);
+end
 % =========================================================================
 
 % =========================================================================
 % DISTANCE FROM KNEE TO ANKLE
     % NOTE : LEK = KNEE, LM = ANKL
-[dist_knee2ank.ldist, dist_knee2ank.rdist] = distKnee2Ank(clean.LLEK,... 
-        clean.RLEK, clean.LLM, clean.RLM, clean, );
+if bool.distknee2ank_bool
+    [dist_knee2ank.ldist, dist_knee2ank.rdist] = distKnee2Ank(clean.LLEK,... 
+        clean.RLEK, clean.LLM, clean.RLM, clean);
+end
 % =========================================================================
 
 % =========================================================================
 % CENTER OF MASS
-centermass = centerMass(clean.SACR, clean.NAVE, clean, bool.centermass_bool);
+if bool.centermass_bool
+    centermass = centerMass(clean.SACR, clean.NAVE, clean);
+end
 % =========================================================================
 
 % =========================================================================
 % PROSTHETIC-SHANK RAIO LENGTH
-pratio = prostheticShankRatio(dist_knee2ank.ldist.avg,dist_knee2ank.rdist.avg, bool.shankratio_bool);
+if bool.shankratio_bool
+    pratio = prostheticShankRatio(dist_knee2ank.ldist.avg, dist_knee2ank.rdist.avg);
+end
 % =========================================================================
 
 % =========================================================================
 % DOUBLESTANCE
-dblstance = dblStance(gfr1.vert, gfr2.vert, time, dataparams.threshold, bool.dblstance_bool);
+if bool.dblstance_bool
+    dblstance = dblStance(gfr1.vert, gfr2.vert, time, dataparams.threshold);
+end
 % =========================================================================
 
 % =========================================================================
 % CADENCE
-cadence = cadence(stride.time.avg, bool.cadence_bool);
+if bool.cadence_bool
+    cadence = Cadence(stride.time.avg);
+end
 % =========================================================================
+
 
 % =========================================================================
 %                       PARAMETERS W/ GAITCYCLES
 % =========================================================================
-%
-%
+
 % =========================================================================
 % GET GAITCYCLES
-gc.info = getGaitcycle(gfr1.vert, frame, time, stride.time, dataparams.LFB, dataparams.UFB, dataparams.gc_percent);
+if bool.gaitcycle_bool
+    gc.info = getGaitcycle(gfr1.vert, frame, time, stride.time, dataparams.LFB, ...
+                           dataparams.UFB, dataparams.gc_percent);
+end
 % =========================================================================
 
 % =========================================================================
 % GAITCYCLE GAIT REACTION FORCES
-[gc.f1, gc.f2] = gcForce(gfr1, gfr2, gc.info, stride.time.time_in_frames, time);
+if bool.gcforce_bool
+    [gc.f1, gc.f2] = gcForce(gfr1, gfr2, gc.info, stride.time.time_in_frames, time);
+end
 % =========================================================================
+
+% =========================================================================
+% JOINT ANGLES
+if bool.jointangle_bool
+    gc.angle = jointAngle(clean.LLEK, clean.RLEK, clean.LLM, clean.RLM, clean.LGTRO, ... 
+                          clean.RGTRO,clean.LTOE, clean.RTOE, gc.info, ...
+                          stride.time.time_in_frames, time);
+end
+% =========================================================================
+
+% =========================================================================
+% JOINT ANGLE VELOCITY
+if bool.jointanglevel_bool
+    [gc.angleVel, LKVshift] = jointAngleVelocity(gc.angle, gc.info, stride.time.time_in_frames, time, 1);
+end
+% =========================================================================
+
+% =========================================================================
+% JOINT ANGLE ACCELERATION
+if bool.jointangleacc_bool
+    [gc.angleAcc, LKVshift] = jointAngleVelocity(gc.angleVel, gc.info, stride.time.time_in_frames, time, 2);
+end
+% =========================================================================
+
+% =========================================================================
+% WEIGHT / MASS
+
+% =========================================================================
+

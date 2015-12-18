@@ -7,6 +7,7 @@ function[dblstance] = dblStance(FV1, FV2, Time, threshold)
 %==========================================================================
 % FINDING THE DOUBLE STANCE TIME
 %==========================================================================
+fprintf('Finding double stance percentage time...')
 dblstnce = 0;
 %Doublestance time is the percentage of time in a gate cycle that both feet
 %are on the ground. This can be calculated by counting each frame/"fraction
@@ -22,5 +23,5 @@ end
 dblstance = (dblstnce/length(Time))*100;
 
 dblstance = sprintf('%g%%', dblstance);
-
+fprintf('done (dblstance)\n')
 end

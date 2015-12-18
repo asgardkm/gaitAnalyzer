@@ -18,7 +18,7 @@ function[gc_info] = getGaitcycle(f1_vert, frame, Time, stridetime_struct, LFB, U
 %==========================================================================
 %FINDING THE START POINTS AND INDEXES OF THE GAIT CYCLE
 %==========================================================================
-
+fprintf('Finding gaitcycles')
 % Assign values from stridetime input strucutre
 Stridetimeframes = stridetime_struct.time_in_frames;
 StridetimeAvg    = stridetime_struct.avg;
@@ -86,6 +86,7 @@ for i = 2 : length(slope_idx);
        hillstart_idx(i-1,k) = slope_idx(i-1);
        k = k + 1;   
    end 
+     fprintf('.') % display counter for force slope indexes 
 end
 
 %average of all the force hill starts
@@ -97,8 +98,8 @@ for k = 1 : length(hillstart(1,:));
         d(i,k) = abs(hillstart(i,k) - hillmean);
         [cstart_f(1,k) cstart_idx(1,k)] = min(d(:,k));
         
-    end  
-         
+    end
+      fprintf('-') % display counter for clean maxes 
 end
 
 % only take first row if the size is too big
@@ -118,6 +119,7 @@ for i = 2 : length(cstart_idx);
 end
 cstart_idx = cstart_idx(cstart_idx~=0);
 counter = counter + 1;
+fprintf('_') % counter for # of cleaning runs
 end
 
 
@@ -133,6 +135,7 @@ V1end_idx = round(bsxfun(@plus, cstart_idx, (gc_percent*Stridetimeframes)));
 while V1end_idx(end) > length(Time);
     cstart_idx = cstart_idx(1:end-1);
     V1end_idx = V1end_idx(1:end-1); 
+    fprintf('+') % counter for trimming
 end
 
 %Time Vector for the STD Cloud graph. This saves each moment/index in a
@@ -147,6 +150,7 @@ TimeVector = Time(cstart_idx(1) : V1end_idx(1)) - Time(cstart_idx(1));
 %percentage
 Stridetimepercent = 100.*TimeVector./StridetimeAvg;
 
+fprintf('done (gc.info)\n')
 % DEFINING OUTPUT STRUCTURE
 gc_info.starts        = cstart_idx;
 gc_info.stops         = V1end_idx;

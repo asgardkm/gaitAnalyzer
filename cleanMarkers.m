@@ -112,8 +112,6 @@ if conc_input == '1'
     cord_all = cellstr(fp_cord(fp_idx))';
 
 
-    
-
     X_idx = find(allgood_idxX);
     Y_idx = find(allgood_idxY);
     Z_idx = find(allgood_idxZ);
@@ -204,7 +202,7 @@ clean.data = data_all;
 % here is such a function :) - clean data values - remove markers that have
 % more than 1/2 of its values as zero, and only keep idx for all markers if
 % idx for any marker are less than half total which are nonzero
-[new, kill_list, new_dall] = rmBlankData(clean, data_all, 0.5, 1);
+[new, kill_list, new_dall] = rmBlankData(clean, data_all, 0.5, 1, 1);
 
 %display removed markers - only if kill_list ~=0:
 if iscell(kill_list)

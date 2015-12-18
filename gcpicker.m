@@ -1,9 +1,10 @@
 function [output_tmp] = gcpicker(input, start_idx, end_idx)
+% FORM   : output = gcpicker(input, start_idx, end_idx)
+%
 %function : pulls out select data from the gaitcycles from
 %an entire data set of the trial, given that beginning and the end
 %of the gaitcycles are known. Also find the average and standard 
 %deviation of the pulled data.
-% form   : output = gcpicker(input, start_idx, end_idx)
 % INPUTS : input - input vector from whole dataset you want to analyze per gc
 %          start_idx - vector of gc start indexes
 %          end_idx   - vector of gc end indexes

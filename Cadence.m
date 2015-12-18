@@ -1,4 +1,4 @@
-function[RPM] = cadence(StridetimeAvg)
+function[RPM] = Cadence(StridetimeAvg)
 %function - find cadence (60/stridetime) - revolutions per minute
 % created     : 27oct2015 (AKM)
 % last edited : 27oct2015 (AKM)
@@ -10,7 +10,9 @@ function[RPM] = cadence(StridetimeAvg)
 %we want to convert it to strides/seconds, which can be read as
 %revolutions/seconds, which can then be converted into revolutions/minute,
 %or RPM (which is cadence)
+fprintf('Finding cadence...')
 StridepSec = 1/StridetimeAvg;
 RPM = StridepSec*60;
+fprintf('done (cadence)\n')
 
 end

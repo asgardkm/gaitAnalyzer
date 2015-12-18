@@ -1,4 +1,4 @@
-function[centermass] = centerMass(SACR, NAVE, oldclean, bool)
+function[centermass] = centerMass(SACR, NAVE, oldclean, multiplier)
 % function - finds approximation of center of mass of person
 %  - averages positions of person's sacrum and navel
 %
@@ -15,7 +15,8 @@ function[centermass] = centerMass(SACR, NAVE, oldclean, bool)
 % here. Since the NAVE and SACR markers have no impact on kinetics and
 % kinematics of gait, it makes no sense to get rid of other indexes of
 % other markers that do, just because there are empty NAVE and SACR indexes
-% lasted edited : 27oct2015(Asgard Kaleb Marroquin)
+% lasted edited : 9dec2015(Asgard Kaleb Marroquin) - added multiplier 
+%                          -more flexible now for indivudal COM body pieces 
     
 %==========================================================================
 % FINDING THE POSITON OF THE CENTER OF MASS (AVG OF SACRUM AND NAVEL)
@@ -31,7 +32,7 @@ fprintf('Finding center of mass')
 %   look at this later. It is a tad cumbersome and it looks ugly,
 %   especially to someone learning the code, but I will probably spend more
 %   time trying to create a function that automates below than actually
-%   just typing in the variables for each function
+%   just typing in the variables as a cell input for useMarkerLCD
 
 % save inputs into an array to feed into useMarkerLCD
 marray  = {SACR          NAVE};
@@ -49,7 +50,7 @@ sacr = struct2cell(sacr);
 nave = struct2cell(nave);
 
 % THIS IS WHERE CENTER OF MASS IS CALCULATED
-tmp_values = cellfun(@(c1, c2) mean([c1{:} c2{:}], 2), sacr, nave, 'uniformoutput', false);
+tmp_values = cellfun(@(c1, c2) mean([c1{:} c2{:}], 2) * multiplier, sacr, nave, 'uniformoutput', false);
 % get names of SACR - X Y Z
 tmp_names = fieldnames(SACR);
 
@@ -58,6 +59,6 @@ for i = 1 : length(tmp_names)
     fprintf('.')
     centermass.(tmp_names{i}) = tmp_values{i};
 end
-fprintf('done\n')
+fprintf('done (centermass)\n') % output var name in fprintf
 
 end

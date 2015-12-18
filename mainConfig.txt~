@@ -63,17 +63,18 @@ File location and parameters for configuring data input reading and gait anaylsi
 !!! This group of keywords is reserved and should not be used anywhere else in this file
 
 ================================================================================
-Value,                                 Variable Name,           Description (examples in brackets)
+Value,				Variable Name,           Description (examples in brackets)
 START CONFIG INPUTS
-default,			       txt_idx,                 marker column indexes you want to select (default-'default')
-1,				       frame_idx,		column which has frame data ('default' will ignore
-2,				       time_idx,    			column which was time data these two columns)   
-[1 2],			 	       ignore_idx,              combine frame_idx and time_idx
-100,			       	       frequency, 		set camera freqeuncy
-5,				       threshold,               set force threshold - for doublestance
-5,				       LFB,                     lower force bound for finding gaitcycles 
-100,  				       UFB,                     upper force bound for finding gaitcycles
-1,				       gc_percent,              percentage of gaitcycle to include in gc vectors (decimal form)	 
+default,			txt_idx,		marker column indexes you want to select (default-'default')
+1,				frame_idx,		column which has frame data ('default' will ignore
+2,				time_idx,			column which was time data these two columns)   
+[1 2],				ignore_idx,		combine frame_idx and time_idx
+100,				frequency, 		set camera freqeuncy
+5,				threshold,		set force threshold - for doublestance
+5,				LFB,			lower force bound for finding gaitcycles 
+100,				UFB,			upper force bound for finding gaitcycles
+1,				gc_percent,		percentage of gaitcycle to include in gc vectors (decimal form)	 
+4.3,				prosthesis,		mass of prosthesis (in kg)
 END CONFIG INPUTS
 ================================================================================
 
@@ -89,20 +90,21 @@ Marker strings to check for in order to trigger bools for runnig parameter funct
 ================================================================================
 Value,                          Variable Name,  Description (examples in brackets)
 START MARKERSTRING INPUTS
-SACR,				sacr_str,	needed for centerMass.m
-NAVE,				nave_str,	needed for centerMass.m
-LLEK,				llek_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
-RLEK,				rlek_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
-LLM,				llm_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
-RLM,				rlm_str,	needed for distKnee2Ank.m -> prostheticShankRatio.m
-LHEE,				lhee_str,	needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m 
-RHEE,				rhee_str,	needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m
-FP1,				fp1_str,	needed for dlbStance.m, getGaitcycle.m, gcForce.m
-FP2,				fp2_str,	needed for dlbStance.m, getGaitcycle.m, gcForce.m
+SACR,				sacr_str,	(sacrum) needed for centerMass.m
+NAVE,				nave_str,	(navel) needed for centerMass.m
+LLEK,				llek_str,	(left knee) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
+RLEK,				rlek_str,	(right knee) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
+LLM,				llm_str,	(left ankle) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
+RLM,				rlm_str,	(right ankle) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
+LGTRO,				lgtro_str,	(left hip) needed for jointAngle.m
+RGTRO,				rgtro_str,	(right hip) needed for jointAngle.m
+LTOE,				ltoe_str,	(left toe) needed for jointAngle.m
+RTOE,				rtoe_str,	(right toe) needed for jointAngle.m
+LHEE,				lhee_str,	(left heel) needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m 
+RHEE,				rhee_str,	(right heel) needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m
+FP1,				fp1_str,	(force plate 1) needed for dlbStance.m, getGaitcycle.m, gcForce.m
+FP2,				fp2_str,	(force plate 2) needed for dlbStance.m, getGaitcycle.m, gcForce.m
 END MARKERSTRING INPUTS
 ================================================================================
-
-
-
 
 

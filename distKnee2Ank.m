@@ -32,6 +32,7 @@ function[ldist, rdist] = distKnee2Ank(LLEK, RLEK, LLM, RLM, clean)
 % [newclean, ~, RLEK] = rmBlankData(newclean, RLEK, 8, 0); % do same for RLEK
 % [newclean, ~, LLM] =  rmBlankData(newclean, LLM,  8, 0); % and LLM
 % [newclean, ~, RLM] =  rmBlankData(newclean, RLM,  8, 0); % and RLM
+fprintf('Finding shank length...') %fprintf info 
 
     marray  = {LLEK RLEK LLM RLM};
     str_ray = {varname(LLEK) varname(RLEK) varname(LLM) varname(RLM)}; 
@@ -57,6 +58,7 @@ function[ldist, rdist] = distKnee2Ank(LLEK, RLEK, LLM, RLM, clean)
     rdistavg = mean(rdistval);
     rdiststd = std(rdistval);
 
+    fprintf('done (dist_knee2ank)\n') % done w/ function and output var name
 
     %==========================================================================
     % OUTPUTS : ASSIGN VARIABLES TO STRUCTURE

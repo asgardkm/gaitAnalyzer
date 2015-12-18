@@ -22,7 +22,7 @@ function[new_marray] = useMarkerLCD(marray, str_ray, all_str, oldclean)
 
 % run rmBlankData to find which of the markers has the most idx missing
 for hi = 1 : length(marray)
-	[tmpclean{hi}, ~, ~] = rmBlankData(oldclean, marray{hi}, 8, 0);   % 8 is a dummy input - %%missing is irrelevenat when taking a flat cut (bool==0)
+	[tmpclean{hi}, ~, ~] = rmBlankData(oldclean, marray{hi}, 8, 0, 0);   % 8 is a dummy input - %%missing is irrelevenat when taking a flat cut (bool==0)
 end
 
 % find which is the LCD of indexes by finding wich of the newclean is the

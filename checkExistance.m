@@ -11,7 +11,7 @@ function[bool] = checkExistance(markerstring, clean)
 % to run
 %
 % created 8dec2015
-% last edited 8dec2015
+% last edited 9dec2015 - added jointAngle bool
 
 %% assigning boolcell existances
 boolcell = cell(length(struct2cell(markerstring)), 2); % define names cell
@@ -79,6 +79,21 @@ else
     bool.gcforce_bool   = 0;
 end
 
+%% joint angle/vel/accel bool (requires shankratio_bool (includes llek/rlek and llm/rlm), lgtro/rgtro, ltoe/rtoe)
+if all(boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'lgtro', 'match'))), 2} && ...
+       boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'rgtro', 'match'))), 2} && ... 
+       boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'rtoe', 'match'))), 2} && ...
+       boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'ltoe', 'match'))), 2} && bool.shankratio_bool)
+    bool.jointangle_bool    = 1;
+    bool.jointanglevel_bool = 1;
+    bool.jointangleacc_bool = 1;
+else
+    bool.jointangle_bool = 0;
+    bool.jointanglevel_bool = 0;
+    bool.jointangleacc_bool = 0;
+end
+   
+
 %% display which functions will be run and which will not
 
 boolnames = fieldnames(bool); % define names of bool struct
@@ -94,6 +109,10 @@ for i = 1 : length(boolnames) % go through function bools
        badfunction{b} = function_str{1}; % assign the rest (w/ val=0) to badfunction
        b = b + 1;
    end
+end
+
+if b == 1 % if badfunction never procced, then save badmarker as a 
+   badfunction = {'N/A, all functions will run! :)'}; 
 end
 
 p = 1; %marker counters
@@ -113,7 +132,6 @@ for k = 1 : length(boolcell(:,1))% go through marker bools
     fprintf('     %s - %s\n', marker_name{k}, disp_str{k}) % display
 
 end
-
 
 % display which functions will be ran and which will not:
 fprintf('The following gait parameter functions will run based on the given input data :\n')

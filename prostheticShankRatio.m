@@ -13,12 +13,14 @@ function[pRatio] = prostheticShankRatio(ldistavg, rdistavg)
 
 %==========================================================================
 % CALCULATING THE PROSTHESES - SHANK LENGTH RATIO
+fprintf('Finding leg-prosthetic shank ratio...')
 if ldistavg < rdistavg;
     pRatio = (ldistavg / rdistavg) * 100;
 else
     pRatio = (rdistavg / ldistavg) * 100;
 end
 pRatio = sprintf('%g%%', pRatio);
+fprintf('done (pratio)\n')
 %==========================================================================
 
 end
