@@ -1,51 +1,15 @@
-%% INTRODUCTION
-% main script for running functions for determining gait properties
-% based on choosing certain markers.
-% author      - Asgard Kaleb Marroquin (University of South Florida)
-% created     - 24aug2015
-% last edited - 9dec2015    integrated mainConfig.txt readConfig.m function
-%                           and bools
+function[] = moduleAnalyze()
+% FORM : 
+%
+% function : 
+%
+% inputs : 
+%
+% outputs :
+%
+% created : 21dec2015 (akm)
+% last edited : 21dec2015 (akm)
 
-%% INPUTS : DATA PREPARATION
-% =========================================================================
-% set your work directory
-setMyWD();
-% =========================================================================
-
-% =========================================================================
-% read in a mainConfig.txt file
-[fileparams, dataparams, markerstring] = readConfig('mainConfig.txt');
-% =========================================================================
-
-% =========================================================================
-% PRELIMINARY SETUP / DATA SELECTION
-%determine OS
-[pc_os, unix_os] = determineOS();
-[csv_str, txt_str] = formatStrings(unix_os, pc_os);
-% either create or choose pre-existing combined trial data and get it's
-% string name - also get the directory of the selected patient
-[trialfile, patient_dir, conc_input] = dataConcInput(csv_str, txt_str, dataparams.txt_idx, fileparams); %NOTE - check back later to see what outputs need to be called from here
-% =========================================================================
-
-% ========================================================================
-% READ AND ANALYZE DATA
-for i = 1:length(trialfile(:,1)) % run for # of trialfiles (1 for 'select', all for 'all')
-    %ORGANIZE TRIALFILE STRING
-    name_tmp = strsplit(trialfile(i,:), '.');
-    truname = char(name_tmp(1));
-    
-    %READ
-    [output.(truname).clean, output.(truname).bool] = moduleRead(trialfile(i, :), patient_dir, ...
-                                                        conc_input, dataparams, markerstring);   
-                                                    
-    %ANALYZE
-end
-% =========================================================================
-
-%% LET THE APPLICATIONS BEGIN!
-
-% required inputs :
-% clean, dataparams, bool
 % =========================================================================
 % FRAME AND TIME 
 % FRAME
@@ -190,3 +154,6 @@ if bool.gcforce_bool && bool.lowleg_bool % MOI won't run w/o lowerLegCOM.m
    [gc.lMOI, gc.rMOI] = gcMOI(llowleg_rad, rlowleg_rad, mass, gc_info, stride.time.time_in_frames, time);
 end
 % =========================================================================
+
+
+end

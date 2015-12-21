@@ -1,4 +1,5 @@
-function[] = lowerLegCOM(LLEK, RLEK, LLM, RLM, LHEE, RHEE, LTOE, RTOE, mass, oldclean, trialfile)
+function[llowleg_rad, rlowleg_rad] = lowerLegCOM(LLEK, RLEK, LLM, RLM, LHEE, RHEE, LTOE, RTOE, mass, oldclean, trialfile)
+% FORM : [lfootcalf_rad, rfootcalf_rad] = lowerLegCOM(LLEK, RLEK, LLM, RLM, LHEE, RHEE, LTOE, RTOE, mass, oldclean, trialfile)
 %
 % function - find the center of mass of the lower leg system (consisting
 % of the calf and foot)
@@ -15,10 +16,13 @@ function[] = lowerLegCOM(LLEK, RLEK, LLM, RLM, LHEE, RHEE, LTOE, RTOE, mass, old
 %           oldclean - structure of markers
 %           trialfile - string name of trial file
 %
-% outputs : 
-%
+% outputs : lfootcalf_rad - radius distance to left lower leg center of mass
+%           rfootcalf_rad - radius distance to right lower leg  ""   ""  ""
+
 % created 18dec2015 akm
 % last edited 18dec2015 akm
+
+fprintf('Finding knee to lowerleg COM radius...')
 
 %--------------------trimming idx------------------------------------------
 % code below seems confusing? see centerMass.m for explanation
@@ -105,7 +109,8 @@ for i = 1 : length(rtoe);
 end
 
 %Find the magnitude of the radius - Pythagoras
-lfootcalf_rad = sqrt(lfootcalf_vrad{1}.^2 + lfootcalf_vrad{2}.^2 + lfootcalf_vrad{3}.^2);
-rfootcalf_rad = sqrt(rfootcalf_vrad{1}.^2 + rfootcalf_vrad{2}.^2 + rfootcalf_vrad{3}.^2);
+llowleg_rad = sqrt(lfootcalf_vrad{1}.^2 + lfootcalf_vrad{2}.^2 + lfootcalf_vrad{3}.^2);
+rlowleg_rad = sqrt(rfootcalf_vrad{1}.^2 + rfootcalf_vrad{2}.^2 + rfootcalf_vrad{3}.^2);
 
+fprintf('done (llowleg_rad, rlowleg_rad)\n')
 end

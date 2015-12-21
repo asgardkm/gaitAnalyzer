@@ -93,14 +93,18 @@ else
     bool.jointangleacc_bool = 0;
 end
    
-%% bool for lower leg system center of mass (requires shankratio_bool(llek/rlek, llm/rlm),
-%                                            stride_bool(lhee/rhee), and ltoe/rtoe)
-if all(bool.shankratio_bool && bool.stride_bool && ...
+%% bool for lower leg system center of mass (requires llek/rlek, llm/rlm, lhee/rhee, and ltoe/rtoe)
+if all(boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'lgtro', 'match'))), 2} && ...
+       boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'rgtro', 'match'))), 2} && ... 
        boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'rtoe', 'match'))), 2} && ...
-       boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'ltoe', 'match'))), 2})
-    bool.lowleg_bool = 1;
+       boolcell{find(cellfun(@(word) ~isempty(word), regexp(boolcell(:,1), 'ltoe', 'match'))), 2} && bool.shankratio_bool)
+    bool.jointangle_bool    = 1;
+    bool.jointanglevel_bool = 1;
+    bool.jointangleacc_bool = 1;
 else
-    bool.lowleg_bool = 0;
+    bool.jointangle_bool = 0;
+    bool.jointanglevel_bool = 0;
+    bool.jointangleacc_bool = 0;
 end
 
 %% display which functions will be run and which will not

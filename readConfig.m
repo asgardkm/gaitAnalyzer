@@ -1,9 +1,10 @@
-function[dataparams, markerstring] = readConfig(filename)
+function[fileparams, dataparams, markerstring] = readConfig(filename)
 % poirpose - set up a function that reads in values established in an
 % external text file
 
 % created 25nov2015 akm
-% last edited 8dec2015 akm - added 2nd group
+% last edited 8dec2015 akm - added markerstrings
+%               20dec2015 akm - added fileparams
 
 %% READING IN mainConfig.txt
 % read in filename :
@@ -28,9 +29,9 @@ end
 
 %% DEFINING AND FINDING KEY WORDS
 % define key words for finding the data we want
-keywords = {'START CONFIG INPUTS', 'END CONFIG INPUTS', ...
+keywords = {'START FILE INPUTS', 'END FILE INPUTS', ...
+            'START CONFIG INPUTS', 'END CONFIG INPUTS', ...
             'START MARKERSTRING INPUTS', 'END MARKERSTRING INPUTS'};
-%             'START EXPOSURE GROUPS', 'END EXPOSURE GROUPS'};
 keyindex = zeros(length(keywords), 1);
 
 % look for keywords inside of mat - regexp!
@@ -39,10 +40,36 @@ for i = 1 : length(keywords)
    keyindex(i) = find(~cellfun(@isempty, tmp));
 end
 
-inputvar_start  = keyindex(1) + 1;
-inputvar_stop   = keyindex(2) - 1;
-stringvar_start = keyindex(3) + 1;
-stringvar_stop  = keyindex(4) - 1;
+filevar_start   = keyindex(1) + 1;
+filevar_stop    = keyindex(2) - 1;
+inputvar_start  = keyindex(3) + 1;
+inputvar_stop   = keyindex(4) - 1;
+stringvar_start = keyindex(5) + 1;
+stringvar_stop  = keyindex(6) - 1;
+
+%% FILE INPUTS
+% loop through the skip and lines and read in the values
+for k = filevar_start : filevar_stop
+    tmp_string = strtrim(strsplit(mat{k}, ','));
+    value{k - keyindex(1)} = tmp_string{1};
+    name{k - keyindex(1)}  = tmp_string{2};
+end
+
+% save values from looping above
+file_select     = value{find(~cellfun(@isempty, regexp(name, 'file_select')))}; % string
+run_symmetry    = str2double(value{find(~cellfun(@isempty, regexp(name, 'run_symmetry')))}); %num
+paretic         = value{find(~cellfun(@isempty, regexp(name, 'paretic')))}; % string
+nonparetic      = value{find(~cellfun(@isempty, regexp(name, 'nonparetic')))}; % string
+
+
+% throw values into a structure
+fileparams = struct('file_select',  file_select, ...
+                    'run_symmetry', run_symmetry, ...
+                    'paretic',      paretic, ...
+                    'nonparetic',   nonparetic);
+
+% clear tmp variables to save memory
+clear file_select run_symmetry paretic nonparetic value name
 
 %% CONFIG INPUTS
 % loop through the skip and lines and read in the values
@@ -87,8 +114,7 @@ dataparams = struct('txt_idx',  txt_idx, ...
 clear txt_idx frame_idx time_idx ignore_idx frequency thresohld LFB UFB gc_percent value name
 
 
-
-%% CONFIG INPUTS
+%% MARKERSTRING INPUTS
 % loop through the skip and lines and read in the values
 for k = stringvar_start : stringvar_stop
     tmp_string = strtrim(strsplit(mat{k}, ','));

@@ -4,11 +4,33 @@ This file serves as the primary configuration file for the gait analyzing script
 
 It specifies parameters for selecting raw data column indexes, defines which ground reaction force directions are associated with which X Y Z Cartestian coordinate, and specifies the exposure groups of interest.
 
-This file is divided into 2 sections.
-The first section defines data parameters for data input and gait analysis
-The second section defines markers to check the existance in order to process their respective function calls for gait analysis
+This file is divided into 3 sections.
+The first section defines which files to select for code manipulation (you may want more than one read in at a time in order to perform symmetry analysis between normal and prosthetic datafiles).
+The second section defines data parameters for data input and gait analysis
+The third section defines markers to check the existance in order to process their respective function calls for gait analysis
 
-% Comments on section 1 inputs : 
+__________________________________**SECTION_1**_________________________________
+
+File location and parameters for selecting # of data files to read in
+!!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
+!!!! NOTE: The keyword **START_FILE_INPUTS** (without underscores) initiates data read, and must be placed before the first line of configuration data
+!!!! NOTE: The keyword **END_FILE_INPUTS** (without underscores) ends the data read, and must be placed after the last line of configuration data
+!!! This group of keywords is reserved and should not be used anywhere else in this file
+
+================================================================================
+Value,			Variable Name,  	Description (examples in brackets)
+START FILE INPUTS
+select,			file_select,		define type of file selection ('select'-run one by one; 'all'-run all .txt in dir)
+1,			run_symmetry,		bool to decide whether to run symmetry analysis (requires paretic and nonparetic)
+PSLow,			paretic,		string input for regexp for defining paretic files in symmetry analysis
+NW,			nonparetic,		string input for regexp for defining nonparetic files in symmetry analysis
+
+END FILE INPUTS
+================================================================================
+
+
+
+% Comments on section 2 inputs : 
 % =========================================================================
 % TEXT INDEXES + FREQUENCY + THRESHOLDS & BOUNDS
 
@@ -54,7 +76,7 @@ The second section defines markers to check the existance in order to process th
 %FREQUENCY OF CAMERAS - defined below
 %THRESHOLDS AND BOUNDS - defined below (do not need to be changed often, if at all, since these are parameters for finding proper gaitcycles from force thresholds, and have been fine tuned over the months so that these following parameters work without issue)
 
-__________________________________**SECTION_1**_________________________________
+__________________________________**SECTION_2**_________________________________
 
 File location and parameters for configuring data input reading and gait anaylsis
 !!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
@@ -63,7 +85,7 @@ File location and parameters for configuring data input reading and gait anaylsi
 !!! This group of keywords is reserved and should not be used anywhere else in this file
 
 ================================================================================
-Value,				Variable Name,           Description (examples in brackets)
+Value,				Variable Name,          Description (examples in brackets)
 START CONFIG INPUTS
 default,			txt_idx,		marker column indexes you want to select (default-'default')
 1,				frame_idx,		column which has frame data ('default' will ignore
@@ -75,11 +97,13 @@ default,			txt_idx,		marker column indexes you want to select (default-'default'
 100,				UFB,			upper force bound for finding gaitcycles
 1,				gc_percent,		percentage of gaitcycle to include in gc vectors (decimal form)	 
 4.3,				prosthesis,		mass of prosthesis (in kg)
+1.2,				p_calf,			mass of prosthesis "calf" (in kg)
+0.9,				p_foot,			mass of prosthesis "foot" (in kg)
 END CONFIG INPUTS
 ================================================================================
 
 
-__________________________________**SECTION_2**_________________________________
+__________________________________**SECTION_3**_________________________________
 
 Marker strings to check for in order to trigger bools for runnig parameter functions
 !!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
@@ -88,23 +112,25 @@ Marker strings to check for in order to trigger bools for runnig parameter funct
 !!! This group of keywords is reserved and should not be used anywhere else in this file
 
 ================================================================================
-Value,                          Variable Name,  Description (examples in brackets)
+Value,                  Variable Name,  Description (examples in brackets)
 START MARKERSTRING INPUTS
-SACR,				sacr_str,	(sacrum) needed for centerMass.m
-NAVE,				nave_str,	(navel) needed for centerMass.m
-LLEK,				llek_str,	(left knee) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
-RLEK,				rlek_str,	(right knee) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
-LLM,				llm_str,	(left ankle) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
-RLM,				rlm_str,	(right ankle) needed for jointAngle.m, distKnee2Ank.m -> prostheticShankRatio.m
-LGTRO,				lgtro_str,	(left hip) needed for jointAngle.m
-RGTRO,				rgtro_str,	(right hip) needed for jointAngle.m
-LTOE,				ltoe_str,	(left toe) needed for jointAngle.m
-RTOE,				rtoe_str,	(right toe) needed for jointAngle.m
-LHEE,				lhee_str,	(left heel) needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m 
-RHEE,				rhee_str,	(right heel) needed for cadence.m, findStride.m -> getGaitcycle.m -> gcForce.m
-FP1,				fp1_str,	(force plate 1) needed for dlbStance.m, getGaitcycle.m, gcForce.m
-FP2,				fp2_str,	(force plate 2) needed for dlbStance.m, getGaitcycle.m, gcForce.m
+SACR,			sacr_str,	(sacrum) needed for centerMass.m
+NAVE,			nave_str,	(navel) needed for centerMass.m
+LLEK,			llek_str,	(left knee) needed for jointAngle.m, lowerlegCOM.m, distKnee2Ank.m -> prostheticShankRatio.m
+RLEK,			rlek_str,	(right knee) needed for jointAngle.m, lowerlegCOM.m, distKnee2Ank.m -> prostheticShankRatio.m
+LLM,			llm_str,	(left ankle) needed for jointAngle.m, lowerlegCOM.m, distKnee2Ank.m -> prostheticShankRatio.m
+RLM,			rlm_str,	(right ankle) needed for jointAngle.m, lowerlegCOM.m, distKnee2Ank.m -> prostheticShankRatio.m
+LGTRO,			lgtro_str,	(left hip) needed for jointAngle.m
+RGTRO,			rgtro_str,	(right hip) needed for jointAngle.m
+LTOE,			ltoe_str,	(left toe) needed for jointAngle.m, lowerlegCOM.m
+RTOE,			rtoe_str,	(right toe) needed for jointAngle.m, lowerlegCOM.m
+LHEE,			lhee_str,	(left heel) needed for cadence.m, lowerlegCOM.m, findStride.m -> getGaitcycle.m -> gcForce.m 
+RHEE,			rhee_str,	(right heel) needed for cadence.m, lowerlegCOM.m, findStride.m -> getGaitcycle.m -> gcForce.m
+FP1,			fp1_str,	(force plate 1) needed for dlbStance.m, getGaitcycle.m, gcForce.m
+FP2,			fp2_str,	(force plate 2) needed for dlbStance.m, getGaitcycle.m, gcForce.m
 END MARKERSTRING INPUTS
 ================================================================================
+
+
 
 
