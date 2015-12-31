@@ -16,7 +16,7 @@ gaitcycles, etc.
 Note on the raw marker/force datafiles : this raw data must be obtained by you, as this code will be analyzing your specified gait 
 trial data. The markers must be placed on the subject and these markers are read by cameras from your gait analyzing system.  -  - The ones used in our research lab are NEXUS (outputs .csv files) and D-FLOW (outputs .txt files), however we will be most likely be staying with D-FLOW / .txt raw datafiles due to a mismatch in camera frequencies between NEXUS and D-FLOW marker datafiles.
 
-TO DO :
+# TO DO 
 
 I don't consider this code to be completely done in it's current state, nor do I ever expect it to be in a be-all do-all state.
 However, I believe that it's reached a reasonably useable state that it should be now runnable with relatively few hiccups. 
@@ -35,6 +35,8 @@ enough).
 - making sure that different datafiles are still supported (as of now I have only checked that .txt files (default) work, but
   .csv files and combination files (should) also still work, but has not been tested yet 
     - note only .txt and .csv files work as of now - adding more supported filetypes could be done (readConfig.m)
+
+
 
 Special thanks to Dr. Kyle B. Reed, Tyagi Ramakrishnan, and Dr. Ismet Handzic at the Rehabilitation Engineering and 
 Electromagnetic Design Laboratory (REEDLab) at the University of South Florida.
