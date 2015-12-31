@@ -40,7 +40,7 @@ configinputs deals with general variables concerning data processing and paramet
 
 ---
 Note that for the following direction variables to function, the titles in the raw files for the markers and forces must contain that string keyword (regexp is being used to match values).
- **Ex** if *forward_marker = X*, then all marker columns concerning forward movement must have the string *X* in the column     title (such as *LHEE.X*, *NAVE.X*, *RTOE.X*, etc). Like for forces : if *vertical_force = Y*, then vertical force values       should have titles such as *FP1.Y*, *FP2.Y*.
+ **Ex.** if *forward_marker = X*, then all marker columns concerning forward movement must have the string *X* in the column     title (such as *LHEE.X*, *NAVE.X*, *RTOE.X*, etc). Like for forces : if *vertical_force = Y*, then vertical force values       should have titles such as *FP1.Y*, *FP2.Y*.
  -  **forward_marker** : define the Cartesian forward direction for the marker coordinate system.
  -  **vertical_marker** : define the Cartesian vertial direction for the marker coordinate system.
  -  **lateral_marker** : define the Cartesian lateral direction for the marker coordinate system.
@@ -52,20 +52,21 @@ Note that for the following direction variables to function, the titles in the r
 
 # markerstring
 
-markersting deals with defining the markers for which certain body joints are required for running different gait parameter functions.
- - **sacr_str** : define string keyword for the sacrum datamarker
- - **nave_str** : define string keyword for the navel datamarker
- - **llek_str** : define string keyword for the left knee datamarker
- - **rlek_str** : define string keyword for the right knee datamarker
- - **llm_str** : define string keyword for the left ankle datamarker
- - **rlm_str** : define string keyword for the right ankle datamarker
- - **lgtro_str** : define string keyword for the left hip datamarker
- - **rgtro_str** : define string keyword for the right hip datamarker
- - **ltoe_str** : define string keyword for the left toe datamarker
- - **rtoe_tr** : define string keyword for the right toe datamarker
- - **lhee_str** : define string keyword for the left heel datamarker
- - **rhee_str** : define string keyword for the right heel datamarker
- - **fp1_str** : define string keyword for the first forceplate (assuming left side)
- - **fp2_str** : define string keyword for the second forceplate (assuming right side)
+markersting deals with defining the markers for which certain body joints are required for running different gait parameter  functions.
+ **EX.** if *sacr_str = SACR*, then the titles of the raw marker coordinate data files for the sacrum marker should contain the string *SACR*, such as *SACR.X*, *SACR.Y*, and *SACR.Z*.
+ - **sacr_str** : define string keyword for the sacrum datamarker.
+ - **nave_str** : define string keyword for the navel datamarker.
+ - **llek_str** : define string keyword for the left knee datamarker.
+ - **rlek_str** : define string keyword for the right knee datamarker.
+ - **llm_str** : define string keyword for the left ankle datamarker.
+ - **rlm_str** : define string keyword for the right ankle datamarker.
+ - **lgtro_str** : define string keyword for the left hip datamarker.
+ - **rgtro_str** : define string keyword for the right hip datamarker.
+ - **ltoe_str** : define string keyword for the left toe datamarker.
+ - **rtoe_tr** : define string keyword for the right toe datamarker.
+ - **lhee_str** : define string keyword for the left heel datamarker.
+ - **rhee_str** : define string keyword for the right heel datamarker.
+ - **fp1_str** : define string keyword for the first forceplate (assuming left side).
+ - **fp2_str** : define string keyword for the second forceplate (assuming right side).
 
 ---
