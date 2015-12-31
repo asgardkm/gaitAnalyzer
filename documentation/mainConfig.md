@@ -14,11 +14,11 @@ fileinputs deals with variables for defining how to run the symmetry analsysi. V
  -  **nonparetic** : string keyword for your trialfiles containing nonparetic trialwalks (matched w/ regexp) 
    - ex. if your normal gait trialfiles are named *Test_NW_1.txt* and *Test_NW_2.txt*, use *nonparetic=NW*)
 
-   
+--- 
 
 
 
 
 
- -  ** run_symmetry** : bool for toggling forward walking direction is in a positive or negative coordinate direction
+ -  **run_symmetry** : bool for toggling forward walking direction is in a positive or negative coordinate direction
    - __ 1__ : 
