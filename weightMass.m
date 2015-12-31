@@ -25,10 +25,13 @@ else
     prostheses = 0; % otherwise set prosthesis mass to 0
 end
 
+% define vertical direction
+vert = dataparams.vertical_force;
+
 % define the max value from force on forceplate1 and add prostheses weight (if any)
 %   - multiplied by .9 it is the patient's weight in Newtons
-weight    = (gc_f1.vert.max_val_avg + prostheses) * 0.9;
-weightidx = mean(gc_f1.vert.proc_idx.pidx); 
+weight    = (gc_f1.(vert).max_val_avg + prostheses) * 0.9;
+weightidx = mean(gc_f1.(vert).proc_idx.pidx); 
 
 mass.patient = weight / 9.81; % mass (kg) is Newtons / 9.81
 

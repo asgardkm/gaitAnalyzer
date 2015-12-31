@@ -1,15 +1,15 @@
-function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame, dataparams)
+function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame, bool)
 %    form   : [stride, lstep, rstep] = findStride(clean.LHEE, clean.RHEE, frequency)
 %
 % function - find step time, distances, and stride values
 %
 %    inputs : clean.LHEE - left ankle points
 %             clean.RHEE - right ankle points
-%             frequency  - frequency in Hz of the camera
-%             frame
-%             dataparams
+%             frequency - frequency in Hz of the camera
+%             proceed with function
 %
-%    ouputs : stride.(dist/time).(avg, std, vector/time_in_frames),
+%    ouputs : the following lists:
+%             stride.(dist/time).(avg, std, vector/time_in_frames),
 %             lstep.(dist/time).(avg, std, vector, idx),
 %             rstep.(dist/time).(avg, std, vector, idx)
 %
@@ -26,12 +26,9 @@ function[stride, lstep, rstep] = findStride(LHEE, RHEE, frequency, frame, datapa
 fprintf('Finding trial step parameters')
 %     YLeftStep  = RHEE.Y - LHEE.Y;
 %     YRightStep = LHEE.Y - RHEE.Y;
-
-% assign forward direction for mainConfig.txt (30dec2015)
-forward_dir = dataparams.forward_marker;
-
-YLeftStep  = FilterMe(RHEE.(forward_dir) - LHEE.(forward_dir), 2, 0.1); % Left Step = Right Heel Pos - Left Heel Pos
-YRightStep = FilterMe(LHEE.(forward_dir) - RHEE.(forward_dir), 2, 0.1); % Right Step = vice versa of above
+%     
+YLeftStep  = FilterMe(RHEE.Y - LHEE.Y, 2, 0.1); % Left Step = Right Heel Pos - Left Heel Pos
+YRightStep = FilterMe(LHEE.Y - RHEE.Y, 2, 0.1); %Right Step = vice versa of above
 %Butterworth filter to smooth out data - necessary to find the peaks of
 %the heel steps.   
 
@@ -48,7 +45,7 @@ YRightStep = FilterMe(LHEE.(forward_dir) - RHEE.(forward_dir), 2, 0.1); % Right 
 % THE MAXIMUMS BETWEEN THE ZEROES OF THE RELATIVE L-R HEEL POSITIONS GRAPH
 %==========================================================================
 
-% Since YLeftStep = YRightHeel - YLeftHeel --> Right Heel Position
+% Since YLeftStep = YRightHeel - YLeftHeel -->Right Heel Position
 % (horiz) - Left Heel Position (horiz),
 % if the YLeftStep switches from Negative to Positive, then the Left
 % Heel is passing the Right Heel(Right Heel is on ground, and Left Heel is in the air).
@@ -95,8 +92,8 @@ ZeroRStep_idx = ZeroRStep_idx(ZeroRStep_idx<=length(frame));
 %vectorize
 for i = 2 : length(ZeroLStep_idx);  
 
-    [MaxLStep(i-1,1), ~] = max(YLeftStep(ZeroLStep_idx(i-1,:)  : ZeroLStep_idx(i,:)));
-    [MaxRStep(i-1,1), ~] = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
+    [MaxLStep(i,1), ~] = max(YLeftStep(ZeroLStep_idx(i-1,:)  : ZeroLStep_idx(i,:)));
+    [MaxRStep(i,1), ~] = max(YRightStep(ZeroRStep_idx(i-1,:) : ZeroRStep_idx(i,:)));
     fprintf('.')
 end
 
@@ -112,7 +109,7 @@ end
 %    ( WHICH IT IS - DIRECTION IS NEGATIVE IN THE CAREN SYSTEM, SO THE SIGN 
 %    MUST BE CHANGED - DONE BY CHANGING THE GRAPH THAT IS BEING ANALYZED)
 
-%Purge zeroes from data (would there even be any now by this point?) 
+%Purge zeroes from data and take averages.
 MaxLStepall = MaxLStep(MaxLStep~=0);
 MaxRStepall = MaxRStep(MaxRStep~=0);
 
@@ -130,14 +127,14 @@ maxr_idx = bsxfun(@ge, MaxRStepall, MaxLStepall);
 % stumbling in trial? b/c maxes of same foot are one after the other
 
 % first get indexes of where the 1's are in each vector
-% maxl_ones = find(maxl_idx == 1);
-% maxr_ones = find(maxr_idx == 1);
+maxl_ones = find(maxl_idx == 1);
+maxr_ones = find(maxr_idx == 1);
 
 % checking for double-counted left indexes
 leftcheck1 = find(diff(maxr_idx) == 0) + 1 ;
 leftcheck2 = find(diff(maxl_idx) == 0) + 1 ; % is the plus one because of the way diff works - we want 
-%   to get rid of the index AFTER a difference of one is detected - we don't
-%   want to get rid of the index BEFORE the repeat.
+% to get rid of the index AFTER a difference of one is detected - we don't
+% want to get rid of the index BEFORE the repeat.
 leftcheck  = intersect(leftcheck1, leftcheck2);
 %     leftcheck  = leftcheck(1);
 % 
@@ -180,10 +177,21 @@ MaxRStep = MaxRStep(maxr_idx);
 MaxLStep_idx = MaxLStep_idx(maxl_idx);
 MaxRStep_idx = MaxRStep_idx(maxr_idx);
 
+% lets try something - if MaxStep_idx vectors aren't matching yet, then do
+% everything above again!
+%     if length(MaxRStep_idx) ~= length(MaxLStep_idx)
+%         superflag = 1;
+%     else
+%         superflag = 0;
+%     end
+% end % end of SUPER while loop
+
+
 %Need to find another parameter in dealing with the little ones, because
 %some data sets have hiccups in the step pattern, throwing the mean off
 % 19oct2015 - found it! just alternate the steps - the low values for one
 % foot are the high values for the other - takes care of lots of issues
+
 
 
 %Should, for whatever reason there be more Right Heel Strikes than Left
@@ -309,7 +317,7 @@ LStepStd = std(LStep);
 
 %Step - convert frames into seconds based on # of Hz by camera
 RStep_timeidx = MaxRStep_idx./frequency;
-LStep_timeidx = MaxLStep_idx./frequency;
+    LStep_timeidx = MaxLStep_idx./frequency;
 
 %Preallocation
 RStep_time = zeros(length(RStep_timeidx), 1);
@@ -322,14 +330,14 @@ LStep_time = zeros(length(RStep_timeidx), 1);
 % 190ct2015 - dont know how to vectorize - will leave alone for now
 if LStep_timeidx(1) < RStep_timeidx(1);
     for i = 2:length(RStep_timeidx);
-        RStep_time(i-1,:) = abs(RStep_timeidx(i) - LStep_timeidx(i));
-        LStep_time(i-1,:) = abs(LStep_timeidx(i) - RStep_timeidx(i-1));
+        RStep_time(i,:) = abs(RStep_timeidx(i) - LStep_timeidx(i));
+        LStep_time(i,:) = abs(LStep_timeidx(i) - RStep_timeidx(i-1));
     end
 
 elseif RStep_timeidx(1) < LStep_timeidx(1);
     for i = 2:length(RStep_timeidx);
-        RStep_time(i-1,:) = abs(RStep_timeidx(i) - LStep_timeidx(i-1));
-        LStep_time(i-1,:) = abs(LStep_timeidx(i) - RStep_timeidx(i));
+        RStep_time(i,:) = abs(RStep_timeidx(i) - LStep_timeidx(i-1));
+        LStep_time(i,:) = abs(LStep_timeidx(i) - RStep_timeidx(i));
     end
 end
 

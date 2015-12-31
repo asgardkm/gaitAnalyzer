@@ -18,8 +18,12 @@ fprintf('  2 - Use raw NEXUS csv only\n')
 fprintf('  3 - Use preprocessed combined NEXUS+DFLOW file\n')
 fprintf('  4 - Combine NEXUS csv and DFLOW txt raw datafiles \n')
 
-% and display input prompt
-conc_input = input('Select your input raw data : ', 's');
+% and display input prompt - will change depending if using 'select' or 'all'
+if strcmp(fileparams.file_select, 'select') % if mainconfig param for file select is 'select',
+    conc_input = input('Select your input raw data FILE : ', 's');
+else
+    conc_input = input('Select your input raw data DIRECTORY : ', 's');
+end
 % conc_input = input('Do you have pre-processed trial data you would like to run? [Y/n] :', 's');
 
     %   default is use current file w/ filename
@@ -35,11 +39,19 @@ switch conc_input
         % then run the analyze functions for only one file at a time
             % if the input is yes - have user select the dflow txt trial data
             [comb_trialfile, patient_dir] = uigetfile([pwd txt_str], 'Select DFLOW txt trial data'); 
+            comb_trialfile = {comb_trialfile}; % make comb_trialfile a cell output
         else % if param is 'all' (or anything else, b/c this is default)
-            patient_dir = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
-            tmp_names   = struct2cell(dir(patient_dir));                       % save patient_dir as cell
-            tmp_match   = regexp(tmp_names(1,:), '.txt', 'match');             % find .txt files from dir
+            patient_dir  = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
+            tmp_names    = struct2cell(dir(patient_dir));                       % save patient_dir as cell
+            tmp_match    = regexp(tmp_names(1,:), '.txt', 'match');             % find .txt files from dir
+            lockmismatch = regexp(tmp_names(1,:), 'lock', 'match');
+            
             match_idx   = find(~cellfun(@isempty, tmp_match));                 % find .txt indexes
+            lock_idx    = find(~cellfun(@isempty, lockmismatch));
+
+            [a, b, ~] = intersect(match_idx, lock_idx, 'stable') ;        
+            
+            match_idx(b) = []
             comb_trialfile = tmp_names(1,match_idx);                           % get your output trialfiles
         end
         
@@ -47,11 +59,19 @@ switch conc_input
         if strcmp(fileparams.file_select, 'select') % if mainconfig param for file select is 'select',
         % then run the analyze functions for only one file at a time
             [comb_trialfile, patient_dir] = uigetfile([pwd csv_str], 'Select NEXUS csv trial data(DOESN''T WORK YET - 11nov2015)'); 
+            comb_trialfile = {comb_trialfile}; % make comb_trialfile a cell output
         else
-            patient_dir = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
-            tmp_names   = struct2cell(dir(patient_dir));                       % save patient_dir as cell
-            tmp_match   = regexp(tmp_names(1,:), '.csv', 'match');             % find .txt files from dir
+                       patient_dir  = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
+            tmp_names    = struct2cell(dir(patient_dir));                       % save patient_dir as cell
+            tmp_match    = regexp(tmp_names(1,:), '.txt', 'match');             % find .txt files from dir
+            lockmismatch = regexp(tmp_names(1,:), 'lock', 'match');
+            
             match_idx   = find(~cellfun(@isempty, tmp_match));                 % find .txt indexes
+            lock_idx    = find(~cellfun(@isempty, lockmismatch));
+
+            [a, b, ~] = intersect(match_idx, lock_idx, 'stable') ;        
+            
+            match_idx(b) = []
             comb_trialfile = tmp_names(1,match_idx);                           % get your output trialfiles
         end
 
@@ -59,11 +79,19 @@ switch conc_input
         if strcmp(fileparams.file_select, 'select') % if mainconfig param for file select is 'select',
         % then run the analyze functions for only one file at a time
             [comb_trialfile, patient_dir] = uigetfile([pwd csv_str], 'Select combined NEXUS+FLOW csv trial data');
+            comb_trialfile = {comb_trialfile}; % make comb_trialfile a cell output
         else
-            patient_dir = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
-            tmp_names   = struct2cell(dir(patient_dir));                       % save patient_dir as cell
-            tmp_match   = regexp(tmp_names(1,:), '.csv', 'match');             % find .txt files from dir
+                        patient_dir  = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
+            tmp_names    = struct2cell(dir(patient_dir));                       % save patient_dir as cell
+            tmp_match    = regexp(tmp_names(1,:), '.txt', 'match');             % find .txt files from dir
+            lockmismatch = regexp(tmp_names(1,:), 'lock', 'match');
+            
             match_idx   = find(~cellfun(@isempty, tmp_match));                 % find .txt indexes
+            lock_idx    = find(~cellfun(@isempty, lockmismatch));
+
+            [a, b, ~] = intersect(match_idx, lock_idx, 'stable') ;        
+            
+            match_idx(b) = []
             comb_trialfile = tmp_names(1,match_idx);                           % get your output trialfiles
         end
         
@@ -73,6 +101,7 @@ switch conc_input
         if strcmp(fileparams.file_select, 'select') % if mainconfig param for file select is 'select',
         % then run the analyze functions for only one file at a time
             [comb_trialfile, patient_dir] = assignData(csv_str, txt_str, txt_idx);
+            comb_trialfile = {comb_trialfile}; % make comb_trialfile a cell output
         else
             error('Error : cannot combine data without ''fileparams.file_select == select'' in mainConfig.txt')
         end
@@ -83,11 +112,19 @@ switch conc_input
         % then run the analyze functions for only one file at a time
             % if the input is yes - have user select the dflow txt trial data
             [comb_trialfile, patient_dir] = uigetfile([pwd txt_str], 'Select DFLOW txt trial data'); 
+            comb_trialfile = {comb_trialfile}; % make comb_trialfile a cell output
         else % if param is 'all' (or anything else, b/c this is default)
-            patient_dir = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
-            tmp_names   = struct2cell(dir(patient_dir));                       % save patient_dir as cell
-            tmp_match   = regexp(tmp_names(1,:), '.txt', 'match');             % find .txt files from dir
+                        patient_dir  = uigetdir([pwd txt_str], 'Select patient directory'); % select dir
+            tmp_names    = struct2cell(dir(patient_dir));                       % save patient_dir as cell
+            tmp_match    = regexp(tmp_names(1,:), '.txt', 'match');             % find .txt files from dir
+            lockmismatch = regexp(tmp_names(1,:), 'lock', 'match');
+            
             match_idx   = find(~cellfun(@isempty, tmp_match));                 % find .txt indexes
+            lock_idx    = find(~cellfun(@isempty, lockmismatch));
+
+            [a, b, ~] = intersect(match_idx, lock_idx, 'stable') ;        
+            
+            match_idx(b) = []
             comb_trialfile = tmp_names(1,match_idx);                           % get your output trialfiles
         end
 end % end of switch case

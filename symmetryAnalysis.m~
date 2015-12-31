@@ -1,0 +1,92 @@
+function[] = symmetryAnalysis(output, paretic, nonparetic)
+% FORM : 
+%
+% function : 
+%
+% inputs :  output - structure with all analyzed datafiles
+%           paretic - string  keyword for paretic structure 
+%           nonparetic string keyword for nonparetic structure
+%
+% outputs :
+%
+% created : 21dec2015 (akm) - developed framework
+% last edited : 30dec2015 (akm) - wrote code
+%
+% --------------------------FOUR SYMMETRY TESTS----------------------------
+% NOTE : the notes below were obtained from 'Evaluation of gait symmetry 
+%     after stroke: A comparison of current methods and recommendations for
+%     standardization' (Patterson et. al., 2010, University of Toronto)
+%
+% SYMMETRY RATIO : V(p) / V(np)
+% SYMMETRY INDEX : [ (V(p) - V(np)) / 0.5*((V(p) + V(np)) ] * 100%
+% GAIT ASYMMETRY : abs[ 100*ln( V(p) / V(np) ) ]
+% SYMMETRY ANGLE : [ ( 45deg - arctan(V(p) / V(np)) ) * 100] / 90
+%
+% where V can be one of five spatiotemporal parameters :
+%   step length                                  (got it)
+%   swing time                                   (got it)
+%   stance time                                  (got it)
+%   doublestance time (DS time)                  (got it)
+%   intralimb ratio of swing-stance time (SW/ST) (got it)
+% -------------------------------------------------------------------------
+%
+% HAHA! figured out swing time!
+% stance time = step time + doublestance time (for the respective foot)
+% swing  time = step time - doublestance time (for the respective foot)
+%
+% NOW : how to determine what is doublestance for each foot? (because BOTH
+% feet are on the ground during doublestance, how to determine which is for
+% each leg?)
+%   - will assume that the doublestance for the given leg is when that leg
+%   is heelstriking and is in the lead (e.g. left doublestance begins when
+%   the left heel striks and ends when the right toes off)
+%   - why not take the total doublestance and use half for each? - b/c this
+%   would not accurately represent differences in doublestance during gait,
+%   ESPECIALLY if the gait is asymmetric; one leg will have longer
+%   doublestance than the other, and using the whole doublestance in half
+%   would not show this
+
+% define filenames
+filenames = fieldnames(output);
+
+% get structures which are paretic and non paretic
+pdata_raw  = regexp(filenames, paretic,    'match');
+npdata_raw = regexp(filenames, nonparetic, 'match');
+
+% get empty idx
+pdata_emptyidx  = cellfun(@isempty, pdata_raw);
+npdata_emptyidx = cellfun(@isempty, npdata_raw);
+
+% get rid of empties
+pdata  = pdata_raw(~pdata_emptyidx);
+npdata = npdata_raw(~npdata_emptyidx);
+
+p_idx = find(~pdata_emptyidx);      % get indexes of paretic structures
+np_idx = find(~npdata_emptyidx);    % get indexes of nonparetic structures
+
+
+%--------------------------------------------------------------------------
+% (PARETIC) get the necessary gait parameters for gait analysis
+for i = 1 : length(p_idx)
+    % steplength
+    p_lstep(i)      = output.(filenames{p_idx(i)}).lstep.distavg;
+    p_rstep(i)      = output.(filenames{p_idx(i)}).rstep.distavg;
+    
+    %swingtime
+    p_lswing(i)     = output.(filenames{p_idx(i)}).swing.ratio.left;
+    p_rswing(i)     = output.(filenames{p_idx(i)}).swing.ratio.right;
+    
+    %stancetime
+    p_lstance(i)    = output.(filenames{p_idx(i)}).stance.ratio.left;
+    p_rstance(i)    = output.(filenames{p_idx(i)}).stance.ratio.right;
+    
+    %doublestance
+    p_ldouble(i)    = output.(filenames{p_idx(i)}).dblstance.ratio.left;
+    p_rdouble(i)    = output.(filenames{p_idx(i)}).dblstance.ratio.right;
+
+
+end
+%--------------------------------------------------------------------------
+
+
+end

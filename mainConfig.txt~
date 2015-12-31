@@ -20,15 +20,15 @@ File location and parameters for selecting # of data files to read in
 ================================================================================
 Value,			Variable Name,  	Description (examples in brackets)
 START FILE INPUTS
-select,			file_select,		define type of file selection ('select'-run one by one; 'all'-run all .txt in dir)
+all,			file_select,		define type of file selection ('select'-run one by one; 'all'-run all .txt in dir)
 1,			run_symmetry,		bool to decide whether to run symmetry analysis (requires paretic and nonparetic)
 PSLow,			paretic,		string input for regexp for defining paretic files in symmetry analysis
 NW,			nonparetic,		string input for regexp for defining nonparetic files in symmetry analysis
-
 END FILE INPUTS
 ================================================================================
 
 
+__________________________________**SECTION_2**_________________________________
 
 % Comments on section 2 inputs : 
 % =========================================================================
@@ -76,7 +76,6 @@ END FILE INPUTS
 %FREQUENCY OF CAMERAS - defined below
 %THRESHOLDS AND BOUNDS - defined below (do not need to be changed often, if at all, since these are parameters for finding proper gaitcycles from force thresholds, and have been fine tuned over the months so that these following parameters work without issue)
 
-__________________________________**SECTION_2**_________________________________
 
 File location and parameters for configuring data input reading and gait anaylsis
 !!!! NOTE: This section has 3 columns of **comma delimited** data only!....This structure must be maintained !!!!
@@ -93,12 +92,19 @@ default,			txt_idx,		marker column indexes you want to select (default-'default'
 [1 2],				ignore_idx,		combine frame_idx and time_idx
 100,				frequency, 		set camera freqeuncy
 5,				threshold,		set force threshold - for doublestance
+0,				forward_bool,		bool - show whether forward walking direction has a + (1) or - (0) direction
 5,				LFB,			lower force bound for finding gaitcycles 
 100,				UFB,			upper force bound for finding gaitcycles
 1,				gc_percent,		percentage of gaitcycle to include in gc vectors (decimal form)	 
 4.3,				prosthesis,		mass of prosthesis (in kg)
 1.2,				p_calf,			mass of prosthesis "calf" (in kg)
 0.9,				p_foot,			mass of prosthesis "foot" (in kg)
+Z,				forward_marker,		Cartesian direction for forward-backward movement on markers
+Y,				vertical_marker,	Cartesian direction for vertical movement on markers
+X,				lateral_marker,		Cartesian direction for side to side lateral movement on markers
+X,				forward_force,		Cartesian direction for forward-backward forces on forceplate
+Y,				vertical_force,		Cartesian direction for vertical forces of forceplate
+Z,				lateral_force,		Cartesian direction for side to side lateral forces on forceplate
 END CONFIG INPUTS
 ================================================================================
 

@@ -1,4 +1,4 @@
-function[angle] = jointAngle(LLEK, RLEK, LLM, RLM, LGTRO, RGTRO, LTOE, RTOE, gc_info, strideframes, time)
+function[angle] = jointAngle(LLEK, RLEK, LLM, RLM, LGTRO, RGTRO, LTOE, RTOE, gc_info, strideframes, time, dataparams)
 % function - find the knee angle of patient during gait. Angles are broken
 % up into individual gait cycles.
 % inputs  : LLEK         - left knee
@@ -12,6 +12,7 @@ function[angle] = jointAngle(LLEK, RLEK, LLM, RLM, LGTRO, RGTRO, LTOE, RTOE, gc_
 %           gc_info      - contains gaitcycle starts and stops
 %           strideframes - # of frames per gaitcycle (aka stride)
 %           time         - time vector
+%           dataparams
 % outputs : angle        - structure with information about joint angle parameters
 %
 %
@@ -30,23 +31,28 @@ fprintf('Finding gaitcycle joint angles...')
 starts = gc_info.starts;
 stops = gc_info.stops;
 
-YRightAnkle = RLM.Y;
-ZRightAnkle = RLM.Z;
-YRightToe   = RTOE.Y;
-ZRightToe   = RTOE.Z;
-YRightKnee  = RLEK.Y;
-ZRightKnee  = RLEK.Z;
-YRightHip   = RGTRO.Y;
-ZRightHip   = RGTRO.Z;
+% define directions from mainConfig.txt (30dec2015
+forward = dataparams.forward_marker;
+vertical = dataparams.vertical_marker;
 
-YLeftAnkle  = LLM.Y;
-ZLeftAnkle  = LLM.Z;
-YLeftToe    = LTOE.Y;
-ZLeftToe    = LTOE.Z;
-YLeftKnee   = LLEK.Y;
-ZLeftKnee   = LLEK.Z;
-YLeftHip    = LGTRO.Y;
-ZLeftHip    = LGTRO.Z;
+% assign
+YRightAnkle = RLM.(vertical);
+ZRightAnkle = RLM.(forward);
+YRightToe   = RTOE.(vertical);
+ZRightToe   = RTOE.(forward);
+YRightKnee  = RLEK.(vertical);
+ZRightKnee  = RLEK.(forward);
+YRightHip   = RGTRO.(vertical);
+ZRightHip   = RGTRO.(forward);
+
+YLeftAnkle  = LLM.(vertical);
+ZLeftAnkle  = LLM.(forward);
+YLeftToe    = LTOE.(vertical);
+ZLeftToe    = LTOE.(forward);
+YLeftKnee   = LLEK.(vertical);
+ZLeftKnee   = LLEK.(forward);
+YLeftHip    = LGTRO.(vertical);
+ZLeftHip    = LGTRO.(forward);
 
 %Right Ankle
 rahoriz     = YRightAnkle - YRightToe;
