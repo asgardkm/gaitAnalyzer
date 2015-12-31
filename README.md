@@ -10,14 +10,12 @@ marker coordinates and force values during gait and returns gait parameters such
 gaitcycles, etc.
 
 Note on the raw marker/force datafiles : this raw data must be obtained by you, as this code will be analyzing your specified gait 
-trial data. The markers must be placed on the subject and these markers are read by cameras from your gait analyzing system. 
-  The ones used in our research lab are NEXUS (outputs .csv files) and D-FLOW (outputs .txt files), however we will be most likely
-  be staying with D-FLOW / .txt raw datafiles due to a mismatch in camera frequencies between NEXUS and D-FLOW marker datafiles.
+trial data. The markers must be placed on the subject and these markers are read by cameras from your gait analyzing system.  -  - The ones used in our research lab are NEXUS (outputs .csv files) and D-FLOW (outputs .txt files), however we will be most likely be staying with D-FLOW / .txt raw datafiles due to a mismatch in camera frequencies between NEXUS and D-FLOW marker datafiles.
 
 I don't consider this code to be completely done in it's current state, nor do I ever expect it to be in a be-all do-all state.
 However, I believe that it's reached a reasonably useable state that it should be now runnable with relatively few hiccups. 
-Of course there will always be bugs to fix and errors to run into, but as of now it (should) do what the program has been designed,
-and can be of some use to other researchers. Improvements are of course always welcome!
+ - Of course there will always be bugs to fix and errors to run into, but as of now it (should) do what the program has been designed,and can be of some use to other researchers. 
+ - Improvements are of course always welcome!
 
 A short example list of things that could still be done (but there will always be code that can be improved if one looks hard
 enough).
