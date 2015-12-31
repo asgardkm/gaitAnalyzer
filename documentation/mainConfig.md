@@ -35,7 +35,7 @@ configinputs deals with general variables concerning data processing and paramet
  - **prosthesis** : mass of your total prosthetic (if running paretic trials) (kg)
  - **p_calf** : mass of the prosthetic calf/shank (kg)
  - **p_foot** : mass of the prosthetic foot (kg)
- ---
+---
 Note that for the following direction variables to function, the titles in the raw files for the markers and forces must contain that string keyword (regexp is being used to match values)
 **Ex** if *forward_marker = X*, then all marker columns concerning forward movement must have the string *X* in the column title (such as *LHEE.X*, *NAVE.X*, *RTOE.X*, etc). Like for forces : if *vertical_force = Y*, then vertical force values should have titles such as *FP1.Y*, *FP2.Y*
  - **forward_marker** : define the Cartesian forward direction for the marker coordinate system
