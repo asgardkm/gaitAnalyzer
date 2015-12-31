@@ -8,7 +8,7 @@ Configuration file for running the gaitAnalyzer code. Here, certain variables ar
 
 ---
 # fileinputs
-fileinputs deals with variables for defining how to run the symmetry analsysi. Variables here dictate which files to read in, whether to run a symmetry analysis on the gait parameters, and define string keywords for the different trialfiles for which to run a symmetry analysis for.
+fileinputs deals with variables for defining how to run the symmetry analysis. Variables here dictate which files to read in, whether to run a symmetry analysis on the gait parameters, and define string keywords for the different trialfiles for which to run a symmetry analysis for.
  - **file_select** : decide quantity of files to run.
    - *select* :  run code for only one user-chosen data file.
    - *all* : run code for all files with the given file extension (default).
