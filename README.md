@@ -35,6 +35,7 @@ enough).
 - making sure that different datafiles are still supported (as of now I have only checked that .txt files (default) work, but
   .csv files and combination files (should) also still work, but has not been tested yet 
     - note only .txt and .csv files work as of now - adding more supported filetypes could be done (readConfig.m)
+ - the code can currently only be run directly from MATLAB. Could this code be developed into an executable? (like an .exe or a .sh ?)
 
 
 
