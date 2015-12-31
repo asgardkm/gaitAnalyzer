@@ -38,6 +38,6 @@ enough).
  - the code can currently only be run directly from MATLAB. Could this code be developed into an executable? (like an .exe or a .sh ?)
 
 
-
+# Acknowledgements
 Special thanks to Dr. Kyle B. Reed, Tyagi Ramakrishnan, and Dr. Ismet Handzic at the Rehabilitation Engineering and 
 Electromagnetic Design Laboratory (REEDLab) at the University of South Florida.
