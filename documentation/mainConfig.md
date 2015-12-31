@@ -4,7 +4,7 @@ last edited : 31dec2015
 ---
 Configuration file for running the gaitAnalyzer code. Here, certain variables are defined by the user, which are then passed into
 the code. The types of variables defined here are divided into three groups : fileinputs, configinputs, and markerstrings.
-
+---
 # fileinputs
 fileinputs deals with variables for defining how to run the symmetry analsysi. Variables here dictate which files to read in, whether to run a symmetry analysis on the gait parameters, and define string keywords for the different trialfiles for which to run a symmetry analysis for.
  - **file_select** : decide quantity of files to run.
@@ -50,4 +50,20 @@ Note that for the following direction variables to function, the titles in the r
 
 # markerstring
 
-markersting
+markersting deals with defining the markers for which certain body joints are required for running different gait parameter functions.
+ - **sacr_str** : define string keyword for the sacrum datamarker
+ - **nave_str** : define string keyword for the navel datamarker
+ - **llek_str** : define string keyword for the left knee datamarker
+ - **rlek_str** : define string keyword for the right knee datamarker
+ - **llm_str** : define string keyword for the left ankle datamarker
+ - **rlm_str** : define string keyword for the right ankle datamarker
+ - **lgtro_str** : define string keyword for the left hip datamarker
+ - **rgtro_str** : define string keyword for the right hip datamarker
+ - **ltoe_str** : define string keyword for the left toe datamarker
+ - **rtoe_tr** : define string keyword for the right toe datamarker
+ - **lhee_str** : define string keyword for the left heel datamarker
+ - **rhee_str** : define string keyword for the right heel datamarker
+ - **fp1_str** : define string keyword for the first forceplate (assuming left side)
+ - **fp2_str** : define string keyword for the second forceplate (assuming right side)
+
+---
