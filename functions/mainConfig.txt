@@ -1,4 +1,4 @@
-********INPUT CONFIGURATION FILE*********,
+ ********INPUT CONFIGURATION FILE*********,
 
 This file serves as the primary configuration file for the gait analyzing script.
 
@@ -117,6 +117,7 @@ Marker strings to check for in order to trigger bools for runnig parameter funct
 !!!! NOTE: The keyword **END_MARKERSTRING_INPUTS** (without underscores) ends the data read, and must be placed after the last line of configuration data
 !!! This group of keywords is reserved and should not be used anywhere else in this file
 
+%
 ================================================================================
 Value,                  Variable Name,  Description (examples in brackets)
 START MARKERSTRING INPUTS

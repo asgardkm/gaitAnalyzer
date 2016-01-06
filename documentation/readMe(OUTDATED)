@@ -1,0 +1,241 @@
+readMe for mainScript.m 
+	function created   : 24aug2015
+	readMe last edited : 11nov2015 
+	author : Asgard Kaleb Marroquin (kmarroquin@mail.usf.edu), University of South Florida
+--------------------------------------------------------------------
+NOTE : outdated! check the readme on the github page
+	The MATLAB script mainScript.m reads in raw patient trial data and outputs parameter structures for the trial. The script is run in two parts, DATA PREPERATION and FINDING PARAMETERS
+
+-	Note - make sure that the script and all necessary
+	functions are in your current working directory.
+
+
+
+=== INPUTS (DATA PREPARATION) : ====================================
+
+	There are two types of inputs required to run mainConfig code, inputs within the code, and inputs that will appear in the prompt when the code is run.
+
+
+--- MANAL INPUTS : -------------------------------------------------
+	- txt_idx    - selecting the columns you wish to use if utilizing a text file (DFLOW) in any way shape or form. This is for
+wheter you wish to use both marker and force data, or if you'd just like to use the force data when combining. Note that this requires you to know what is in your DFLOW datafile ( you may need to count).
+
+	- frequency  - frequency of camera (originally set to 100).
+
+	- threshold  - force threshold (originally set to 5, may not need be changed often).
+
+	- LFB        - lower force boundary for finding gaitcycles (originally set to 5, may not need be changed often).
+
+	- UFB        - upper force boundary for finding gaitcycles (originally set to 100, may not need be changed often).
+
+	- gc_percent - percentage of gaitcycle to include in the gaitcycle vectors (originally set to 1, or 100%) 
+
+
+--- PROMPT IMPUTS : ------------------------------------------------
+- 	Prompt Input Options : 
+		- 1 ) select your raw DFLOW txt datafile
+
+		- 2 ) select your raw NEXUS csv datafile (currently not working)
+
+		- 3 ) select combined preprocessed DFLOW+NEXUS csv datafile
+
+		- 4 ) create a combined DFLOW+NEXUS csv datafile (and use it afterwards for finding parameters)
+
+
+
+=== OUTPUTS (FINDING PARAMETERS) : =================================
+	
+	Note : based on your input file, not all parameters may be avaiable (no forces-> no gaitcycle (parameters) available in NEXUS csv only, no center of gravities available with files containing foot markers only, etc)
+
+	As of right now, please comment out functions which your input raw trial data is not compatible with (subject to improvement in the future (with case structure)
+
+
+- frame - vector containing frame numbers for trial
+
+
+
+- time - vector containing time value for trial
+
+
+
+- kinetics - structure containing kinetics for entire trial
+
+	- grf1 - ground reaction forces for foot 1
+
+		- side - side2side GRF
+
+		- vert - vertical GRF
+
+		- forw - forward and backward GRF
+
+	- grf2 - ground reaction forces for foot 2
+
+		- side - side2side GRF
+
+		- vert - vertical GRF
+
+		- forw - forward and backward GRF
+
+
+
+- kinematics - structure containing kinematics for entire trial
+
+
+	- stride - stride data
+
+		- dist - stride distance data
+			- avg - average stride distance for trial
+			- std - standard deviation of stride distance for trial
+			- vector - contains maximum stride distances for whole trial
+
+		- time - stride time data
+			- avg - average stride time for trial
+			- std - standard deviation of stride time for trial
+			- vector - contains time values for each max stride distance
+			- time_in_frames - converting frame value for one stride into a time values
+
+
+	- lstep - left step data
+
+		- distavg    - average left step distance for trial
+
+		- diststd    - standard deviation of left step distance for trial
+
+		- distvector - max left step distances for whole trial
+
+		- distidx    - indexes during trial where max left step distances occur
+
+		- timeavg    - average left step time for trial
+
+		- timestd    - standard deviation of left step time for trial
+
+		- timevector - left step times throughout trial
+
+		- timeidx    - indexes for left steps in time units
+
+
+	- rstep - right step data
+		- distavg    - average right step distance for trial
+
+		- diststd    - standard deviation of right step distance for trial
+
+		- distvector - max right step distances for whole trial
+
+		- distidx    - indexes during trial where max right step distances occur
+
+		- timeavg    - average right step time for trial
+
+		- timestd    - standard deviation of right step time for trial
+
+		- timevector - right tep times throughout trial
+
+		- timeidx    - indexes for right steps in time units
+
+
+	- dist_knee2ank - shank length data
+
+		- ldist - left shank distance
+			- avg - average left shank length
+			- std - left shank length standard deviation
+
+		- rdist - right shank distance
+			- avg - average right shank length
+			- std - right shank length standard deviation
+
+
+ 	- centermass - center of mass location
+
+		- X - x centermass coordinate vector
+
+		- Y - y centermass coordinate vector
+
+		- Z - z centermass coordinate vector
+
+	- pratio     - percentage of one leg's shank length to the other leg's shank length
+
+
+	- dblstance  - doublestance percentage time throughout trial
+
+
+	- cadence    - number of steps taken per minute ("revolutions per minute") 
+
+
+
+
+- gc - structure containing parameters and information about the gaitcycles
+
+
+	- info - general information about gaitcycles
+
+		- starts - vector containing starts for gaitcycles
+		- stops  - vector containing stops for gaityclces
+		- timevector - vector containing elapsed time for one gaitcycle 
+		- percentvector - vector containing elapsed percent value for one gaitcycle
+
+
+	- f1/f2 - gaitcycle information about the forces on foot 1/foot2
+
+		- vert/side/forw - vertical/side2side/forward-backward GRF
+			- max_val - max vertical GRF/cycle
+			- raw_idx - strucutre w/ raw indexes
+				- idx - raw indexes w/ max_values
+				- pidx - raw idx shown as percentage of gaitcyclce
+				- maxavg_idx - avarege raw index value
+				- maxstd_idx - std raw index value
+			- proc_idx - structure w/ processed indexes
+				- idx - processed indexes w/ max_values
+				- pidx - processed idx shown as percentage of gaitcyclce
+				- maxavg_idx - avarege processed index value
+				- maxstd_idx - std processed index value
+			- maxavg - average max force value across all of the gaitcycle hills
+			- maxstd - std of above maxavg
+			- diffmatrix - difference matrix among each force value for gaitcycles hill
+			- matrix - matrix containing all the force values for each gaitcycle hill
+
+
+# NOTE - this is where more Gaitcycle parameters would be added (now that the functions for pulling gaitcycle parameters in now established - which would be   gcpicker.m ---> getMaxParams.m)
+
+
+
+=====Functions used in code (function invocation map):============= 
+
+DATA PREPARATION : 
+- determineOS.m
+- formatStrings.m
+- dataconcInput.m
+- 	assignData.m
+- 		concDataStr.m
+- 		duplDecision.m
+- 		checkCsvTxt.m
+- 		combiner.m
+- 			importRawCsv.m
+- 			importRawTxt.m
+- 			cell2csv.m
+- readData.m
+-	importRawTxt.m
+-	importRawCsv.m
+-	importProcCsv.m
+- assignMarkers.m
+- cleanMarkers.m
+-	sepCellStrings.m
+-	rmBlankData.m
+
+DATA PREPARATION : 
+- getGRF.m
+-	FilterMe.m
+- findStride.m
+-	FilterMe.m
+- distKnee2Ank.m
+-	useMarkerLCD.m
+-		rmBlankData.m
+- centerMass.R
+-	useMarkerLCD.m
+-		rmBlankData.m
+- prostheticShankRatio.m
+- dblStance.m
+- cadence.m	
+- getGaitcycle.m
+- gcForce.m
+-	gcpicker.m
+-	getMaxParams.m
+
