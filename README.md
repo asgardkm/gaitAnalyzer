@@ -12,7 +12,8 @@ marker coordinates and force values during gait and returns gait parameters such
 gaitcycles, etc.
 
 Note on the raw marker/force datafiles : this raw data must be obtained by you, as this code will be analyzing your specified gait 
-trial data. The markers must be placed on the subject and these markers are read by cameras from your gait analyzing system.  -  - The ones used in our research lab are NEXUS (outputs .csv files) and D-FLOW (outputs .txt files), however we will be most likely be staying with D-FLOW / .txt raw datafiles due to a mismatch in camera frequencies between NEXUS and D-FLOW marker datafiles.
+trial data. Markers are placed on subject and are read by cameras from your gait analyzing system.  
+ - The ones used in our research lab are NEXUS (outputs .csv files) and D-FLOW (outputs .txt files); however, we will be most likely be staying with D-FLOW / .txt raw datafiles due to a mismatch in camera frequencies between NEXUS and D-FLOW marker datafiles.
 
 # TO DO 
 
