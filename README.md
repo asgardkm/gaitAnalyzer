@@ -7,7 +7,7 @@ MATLAB code for gait analysis of a research subject's recorded marker coordinate
 
 This code was written in order to analyze the gait of a trial research subject. It does so by first reading in raw marker coordinate
 information and forceplate data from a trial walk. It then processes it and cleans it, eliminating markers with
-too much missing information (this percentage threshold can be tailored in mainConfig.txt). Afterwards, it then analyzes the 
+too much missing information (this percentage threshold can be tailored in mainConfig.txt). Afterwards, it analyzes the 
 marker coordinates and force values during gait and returns gait parameters such as step lengths and times, knee angles, 
 gaitcycles, etc.
 
