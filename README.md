@@ -4,8 +4,6 @@
 MATLAB code for gait analysis of a research subject's recorded marker coordinates and forceplate values of a trial walk.
 
 # Introduction
-Hello! This is my first proper programming project, as well as my first project on GitHub, so this page may not be yet as refined
-as it could be (please bear with me :))
 
 This code was written in order to analyze the gait of a trial research subject. It does so by first reading in raw marker coordinate
 information and forceplate data from a trial walk. It then processes it and cleans it, eliminating markers with
